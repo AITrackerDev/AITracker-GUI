@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from SettingsHelper import SettingsOption, EntrySetting
+from SettingsHelper import SettingsOption, EntrySetting, load_settings, save_settings_to_json
 
 ABOUT_STRING = "aiTracker is a simple application used to provide new forms of input to hardware with just your eyes! Simply look in the direction "
 
@@ -46,7 +46,7 @@ class SettingsScreen(ctk.CTkFrame):
         # settings label and back button
         title = ctk.CTkLabel(self, text="Settings", font=ctk.CTkFont(size=40))
         title.place(relx=.5, rely=.05, anchor=ctk.CENTER)
-        back_button = ctk.CTkButton(self, text="Back", command=lambda: self.show_screen_callback(MainScreen))
+        back_button = ctk.CTkButton(self, text="Back", command=lambda: self.save_settings())
         back_button.place(relx=.5, rely=.95, anchor=ctk.CENTER)
         
         # frame to hold all setting options
@@ -76,6 +76,35 @@ class SettingsScreen(ctk.CTkFrame):
         self.down_right.grid(row=3, column=1, padx=5, pady=5, sticky=ctk.NSEW)
         self.blink.grid(row=4, column=0, padx=5, pady=5, sticky=ctk.NSEW)
         self.look_duration.grid(row=4, column=1, padx=5, pady=5, sticky=ctk.NSEW)
+        
+        # load settings
+        settings_map = load_settings("settings.json")
+        self.up.set_settings(settings_map["Up"])
+        self.down.set_settings(settings_map["Down"])
+        self.left.set_settings(settings_map["Left"])
+        self.right.set_settings(settings_map["Right"])
+        self.up_left.set_settings(settings_map["Up Left"])
+        self.up_right.set_settings(settings_map["Up Right"])
+        self.down_left.set_settings(settings_map["Down Left"])
+        self.down_right.set_settings(settings_map["Down Right"])
+        self.blink.set_settings(settings_map["Blink"])
+        self.look_duration.set_value(settings_map["Look Duration"])
+    
+    # saves all of the settings and returns back to the main screen
+    def save_settings(self):
+        settings = dict()
+        settings.update(self.up.get_settings())
+        settings.update(self.down.get_settings())
+        settings.update(self.left.get_settings())
+        settings.update(self.right.get_settings())
+        settings.update(self.up_left.get_settings())
+        settings.update(self.up_right.get_settings())
+        settings.update(self.down_left.get_settings())
+        settings.update(self.down_right.get_settings())
+        settings.update(self.blink.get_settings())
+        settings.update(self.look_duration.get_value())
+        save_settings_to_json(settings, "settings.json")
+        self.show_screen_callback(MainScreen)
 
 class LaunchScreen(ctk.CTkFrame):
     def __init__(self, root, show_screen_callback):
