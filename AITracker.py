@@ -10,11 +10,14 @@ import ctypes
 class AITracker(ctk.CTk):
     def __init__(self):
         super().__init__()
-        self.title("aiTracker")
         self.current_screen = None
+        
+        # window setup
+        self.title("aiTracker")
         ctk.set_appearance_mode("dark")
         ctk.set_default_color_theme("blue")
         self.geometry("1080x720")
+        self.minsize(1080, 720)
         self.attributes('-topmost', 1)
         self.update()
         self.attributes('-topmost', 0)

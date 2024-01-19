@@ -1,47 +1,47 @@
 {
   "Up": [
     true,
-    "0",
+    "",
     false
   ],
   "Down": [
     true,
-    "0",
+    "",
     false
   ],
   "Left": [
     true,
-    "0",
+    "",
     false
   ],
   "Right": [
     true,
-    "0",
+    "",
     false
   ],
   "Up Left": [
     true,
-    "0",
+    "",
     false
   ],
   "Up Right": [
     true,
-    "0",
+    "",
     false
   ],
   "Down Left": [
     true,
-    "0",
+    "",
     false
   ],
   "Down Right": [
     true,
-    "0",
+    "",
     false
   ],
   "Blink": [
     true,
-    "0",
+    "",
     false
   ],
   "Look Duration": 0

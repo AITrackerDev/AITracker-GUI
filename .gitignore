@@ -16,3 +16,6 @@ _site
 build/
 dist/
 test.py
+settings.json
+horse.jpg
+car.jpg
