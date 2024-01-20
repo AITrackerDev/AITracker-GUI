@@ -2,7 +2,7 @@
   "Up": [
     true,
     "",
-    false
+    true
   ],
   "Down": [
     true,
@@ -44,5 +44,5 @@
     "",
     false
   ],
-  "Look Duration": 0
+  "Look Duration": 2000
 }
