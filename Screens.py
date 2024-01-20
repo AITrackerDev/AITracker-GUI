@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from SettingsHelper import SettingsOption, EntrySetting, load_settings, save_settings_to_json
+from LaunchHelper import IndicatorFrame
 
 class MainScreen(ctk.CTkFrame):
     def __init__(self, root, show_screen_callback):
@@ -74,6 +75,11 @@ class SettingsScreen(ctk.CTkFrame):
         self.blink = SettingsOption(settings_frame, name="Blink")
         self.look_duration = EntrySetting(settings_frame, name="Look Duration")
         
+        self.settings = [
+            self.up, self.down, self.left, self.right, self.up_left,
+            self.up_right, self.down_left, self.down_right, self.blink, self.look_duration
+        ]
+        
         # setting placements
         self.up.grid(row=0, column=0, padx=5, pady=5, sticky=ctk.NSEW)
         self.down.grid(row=0, column=1, padx=5, pady=5, sticky=ctk.NSEW)
@@ -120,14 +126,32 @@ class LaunchScreen(ctk.CTkFrame):
         super().__init__(root, width=root.winfo_width(), height=root.winfo_height())
         self.show_screen_callback = show_screen_callback
         
-        # widget creation
-        back_button = ctk.CTkButton(self, text="Back", command=lambda: self.show_screen_callback(MainScreen))
-        # widget placement
-        back_button.place(relx=.5, rely=0.95, anchor=ctk.CENTER)
-        '''
-        b key goes back
-        camera feed
-        9 sections for each input
-            each lights up when input is recognized
-            overlay on top of the camera feed
-        '''
+        # leave the screen when "b" is pressed
+        root.bind("b", lambda event: self.leave_screen())
+        self.focus_set()
+        
+        # indicator squares
+        settings = load_settings("settings.json")
+        self.up = IndicatorFrame(self, settings["Up"])
+        self.down = IndicatorFrame(self, settings["Down"])
+        self.left = IndicatorFrame(self, settings["Left"])
+        self.right = IndicatorFrame(self, settings["Right"])
+        self.up_left = IndicatorFrame(self, settings["Up Left"])
+        self.up_right = IndicatorFrame(self, settings["Up Right"])
+        self.down_left = IndicatorFrame(self, settings["Down Left"])
+        self.down_right = IndicatorFrame(self, settings["Down Right"])
+        self.blink = IndicatorFrame(self, settings["Blink"])
+        
+        #placing squares
+        self.up_left.place(relx=0, rely=0, anchor=ctk.NW)
+        self.up.place(relx=0.5, rely=0, anchor=ctk.N)
+        self.up_right.place(relx=1, rely=0, anchor=ctk.NE)
+        self.left.place(relx=0, rely=0.5, anchor=ctk.W)
+        self.blink.place(relx=0.5, rely=0.5, anchor=ctk.CENTER)
+        self.right.place(relx=1, rely=0.5, anchor=ctk.E)
+        self.down_left.place(relx=0, rely=1, anchor=ctk.SW)
+        self.down.place(relx=0.5, rely=1, anchor=ctk.S)
+        self.down_right.place(relx=1, rely=1, anchor=ctk.SE)
+        
+    def leave_screen(self):
+        self.show_screen_callback(MainScreen)
