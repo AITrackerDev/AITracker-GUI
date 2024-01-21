@@ -5,28 +5,28 @@ import customtkinter as ctk
 import random
 
 class IndicatorFrame(ctk.CTkFrame):
-    def __init__(self, root, settings, look_duration_time):
+    def __init__(self, root, settings):
         super().__init__(root)
         
         # set the properties of the frame
-        self.active = settings[0]
-        self.constant = settings[2]
-        self.duration = look_duration_time
+        self._active = settings[0]
+        self._constant = settings[2]
         self.configure(fg_color="white" if self.active else "transparent")
         
         # testing code
         if self.active:
-            self.bind("<Button-1>", self.change_color)
+            self.bind("<Button-1>", self.change_color("green" if self.cget("fg_color") == "white" else "white"))
     
-    def change_color(self, event):
-        if self.constant:
-            if self.cget("fg_color") == "white":
-                self.configure(fg_color="green")
-            else:
-                self.configure(fg_color="white")
-        else:
-            self.configure(fg_color="green")
-            self.after(self.duration, lambda: self.configure(fg_color="white")) 
+    @property
+    def active(self) -> bool:
+        return self.active
+    
+    @property
+    def constant(self) -> bool:
+        return self.constant
+    
+    def change_color(self, color, event):
+        self.configure(fg_color=color)
         
 '''
 function to start a camera feed

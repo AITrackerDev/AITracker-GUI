@@ -132,15 +132,15 @@ class LaunchScreen(ctk.CTkFrame):
         
         # indicator squares
         settings = load_settings("settings.json")
-        self.up = IndicatorFrame(self, settings["Up"], settings["Look Duration"])
-        self.down = IndicatorFrame(self, settings["Down"], settings["Look Duration"])
-        self.left = IndicatorFrame(self, settings["Left"], settings["Look Duration"])
-        self.right = IndicatorFrame(self, settings["Right"], settings["Look Duration"])
-        self.up_left = IndicatorFrame(self, settings["Up Left"], settings["Look Duration"])
-        self.up_right = IndicatorFrame(self, settings["Up Right"], settings["Look Duration"])
-        self.down_left = IndicatorFrame(self, settings["Down Left"], settings["Look Duration"])
-        self.down_right = IndicatorFrame(self, settings["Down Right"], settings["Look Duration"])
-        self.blink = IndicatorFrame(self, settings["Blink"], settings["Look Duration"])
+        self.up = IndicatorFrame(self, settings["Up"])
+        self.down = IndicatorFrame(self, settings["Down"])
+        self.left = IndicatorFrame(self, settings["Left"])
+        self.right = IndicatorFrame(self, settings["Right"])
+        self.up_left = IndicatorFrame(self, settings["Up Left"])
+        self.up_right = IndicatorFrame(self, settings["Up Right"])
+        self.down_left = IndicatorFrame(self, settings["Down Left"])
+        self.down_right = IndicatorFrame(self, settings["Down Right"])
+        self.blink = IndicatorFrame(self, settings["Blink"])
         
         #placing squares
         self.up_left.place(relx=0, rely=0, anchor=ctk.NW)
