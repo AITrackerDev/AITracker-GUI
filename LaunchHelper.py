@@ -10,20 +10,25 @@ class IndicatorFrame(ctk.CTkFrame):
         
         # set the properties of the frame
         self._active = settings[0]
+        self._pin = settings[1]
         self._constant = settings[2]
-        self.configure(fg_color="white" if self.active else "transparent")
+        self.configure(fg_color="white" if self._active else "transparent")
         
         # testing code
-        if self.active:
-            self.bind("<Button-1>", self.change_color("green" if self.cget("fg_color") == "white" else "white"))
+        if self._active:
+            self.bind("<Button-1>", lambda event: self.change_color("green" if self.cget("fg_color") == "white" else "white", event))
     
     @property
     def active(self) -> bool:
-        return self.active
+        return self._active
+    
+    @property
+    def pin(self) -> str:
+        return self._pin
     
     @property
     def constant(self) -> bool:
-        return self.constant
+        return self._constant
     
     def change_color(self, color, event):
         self.configure(fg_color=color)
