@@ -1,6 +1,7 @@
 import customtkinter as ctk
-from SettingsHelper import SettingsOption, EntrySetting, load_settings, save_settings_to_json
+from SettingsHelper import SettingsOption, NumberEntry, load_settings, save_settings_to_json
 from LaunchHelper import IndicatorFrame
+import re
 
 class MainScreen(ctk.CTkFrame):
     def __init__(self, root, show_screen_callback):
@@ -73,11 +74,11 @@ class SettingsScreen(ctk.CTkFrame):
         self.down_left = SettingsOption(settings_frame, name="Down Left")
         self.down_right = SettingsOption(settings_frame, name="Down Right")
         self.blink = SettingsOption(settings_frame, name="Blink")
-        self.look_duration = EntrySetting(settings_frame, name="Look Duration")
+        self.look_duration = NumberEntry(settings_frame, name="Look Duration")
         
         self.settings = [
             self.up, self.down, self.left, self.right, self.up_left,
-            self.up_right, self.down_left, self.down_right, self.blink, self.look_duration
+            self.up_right, self.down_left, self.down_right, self.blink
         ]
         
         # setting placements
@@ -94,32 +95,32 @@ class SettingsScreen(ctk.CTkFrame):
         
         # load settings from json
         settings_map = load_settings("settings.json")
-        self.up.set_settings(settings_map["Up"])
-        self.down.set_settings(settings_map["Down"])
-        self.left.set_settings(settings_map["Left"])
-        self.right.set_settings(settings_map["Right"])
-        self.up_left.set_settings(settings_map["Up Left"])
-        self.up_right.set_settings(settings_map["Up Right"])
-        self.down_left.set_settings(settings_map["Down Left"])
-        self.down_right.set_settings(settings_map["Down Right"])
-        self.blink.set_settings(settings_map["Blink"])
+        for setting in self.settings:
+            setting.set_settings(settings_map[setting.name])
         self.look_duration.set_value(settings_map["Look Duration"])
     
     # saves all of the settings and returns back to the main screen
     def save_settings(self):
-        settings = dict()
-        settings.update(self.up.get_settings())
-        settings.update(self.down.get_settings())
-        settings.update(self.left.get_settings())
-        settings.update(self.right.get_settings())
-        settings.update(self.up_left.get_settings())
-        settings.update(self.up_right.get_settings())
-        settings.update(self.down_left.get_settings())
-        settings.update(self.down_right.get_settings())
-        settings.update(self.blink.get_settings())
-        settings.update(self.look_duration.get_value())
-        save_settings_to_json(settings, "settings.json")
-        self.show_screen_callback(MainScreen)
+        new_settings = dict()
+        invalid_pin = False
+        
+        for setting in self.settings:
+            current_settings = setting.get_settings()
+            
+            # if the setting is active, check if the pin doesn't match
+            if current_settings[0] and not re.match("^C[1-9]$|^D[0-7]$", current_settings[1]):
+                invalid_pin = True
+                break
+            new_settings.update({setting.name:current_settings})
+        
+        new_settings.update(self.look_duration.get_value())
+        # display warning message
+        if not invalid_pin:
+            self.show_screen_callback(MainScreen)
+            save_settings_to_json(new_settings, "settings.json")
+        else:
+            warning = ctk.CTkLabel(self, text="1 or more pin values are invalid", font=ctk.CTkFont(size=30))
+            warning.place(relx=.5, rely=.85, anchor=ctk.CENTER)
 
 class LaunchScreen(ctk.CTkFrame):
     def __init__(self, root, show_screen_callback):

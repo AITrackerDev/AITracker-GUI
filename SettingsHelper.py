@@ -3,19 +3,21 @@ All of the necessary functions for the settings screen should be located in here
 '''
 import customtkinter as ctk
 import json
+import re
 
 class SettingsOption(ctk.CTkFrame):
     def __init__(self, root, name):
         super().__init__(root)
         
         #setting widgets
-        self.name = name
+        self._name = name
         self.label = ctk.CTkLabel(self, text=name, font=ctk.CTkFont(size=20))
         self.switch_var = ctk.BooleanVar(value=True)
         self.switch = ctk.CTkSwitch(self, variable=self.switch_var, onvalue=True, offvalue=False, text="Active")
         
         self.input_var = ctk.StringVar(value="")
-        self.input = ctk.CTkEntry(self, textvariable=self.input_var, placeholder_text="Pin Value")
+        self.input = ctk.CTkEntry(self, textvariable=self.input_var)
+        self.input.bind("<KeyRelease>", self.validate_pin)
         
         self.check_var = ctk.BooleanVar(value=False)
         self.check = ctk.CTkCheckBox(self, variable=self.check_var, onvalue=True, offvalue=False, text="Constant Input")
@@ -26,16 +28,28 @@ class SettingsOption(ctk.CTkFrame):
         self.input.grid(row=1, column=0, padx=5, pady=5)
         self.check.grid(row=1, column=1, padx=5, pady=5)
     
+    @property
+    def name(self) -> str:
+        return self._name
+        
+    def validate_pin(self, *args):
+        if re.match("^C[1-9]$|^D[0-7]$", self.input_var.get().strip()):
+            self.input.configure(text_color="green")
+        else:
+            self.input.configure(text_color="red")
+        return True;
+    
     # returns a dictionary mapping for the setting name, and all of the values  
     def get_settings(self):
-        return {self.name: (self.switch_var.get(), self.input_var.get(), self.check_var.get())}
+        return (self.switch_var.get(), self.input_var.get(), self.check_var.get())
     
+    # sets the settings
     def set_settings(self, settings):
         self.switch_var.set(settings[0])
         self.input_var.set(settings[1])
         self.check_var.set(settings[2])
 
-class EntrySetting(ctk.CTkFrame):
+class NumberEntry(ctk.CTkFrame):
     def __init__(self, root, name):
         super().__init__(root)
         validate_cmd = root.register(self.validate_input)

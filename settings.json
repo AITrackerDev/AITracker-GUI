@@ -1,47 +1,47 @@
 {
   "Up": [
     true,
-    "",
+    "C1",
     false
   ],
   "Down": [
     true,
-    "",
+    "C2",
     false
   ],
   "Left": [
     true,
-    "",
+    "C3",
     false
   ],
   "Right": [
     true,
-    "",
+    "C4",
     false
   ],
   "Up Left": [
     true,
-    "",
+    "C5",
     false
   ],
   "Up Right": [
     true,
-    "",
+    "C6",
     false
   ],
   "Down Left": [
     true,
-    "",
+    "C7",
     false
   ],
   "Down Right": [
     true,
-    "",
+    "C8",
     false
   ],
   "Blink": [
     true,
-    "",
+    "C9",
     false
   ],
   "Look Duration": 2000
