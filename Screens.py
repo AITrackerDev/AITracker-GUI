@@ -119,7 +119,7 @@ class SettingsScreen(ctk.CTkFrame):
             self.show_screen_callback(MainScreen)
             save_settings_to_json(new_settings, "settings.json")
         else:
-            warning = ctk.CTkLabel(self, text="1 or more pin values are invalid", font=ctk.CTkFont(size=30))
+            warning = ctk.CTkLabel(self, text="One or more pin values are invalid", font=ctk.CTkFont(size=30))
             warning.place(relx=.5, rely=.85, anchor=ctk.CENTER)
 
 class LaunchScreen(ctk.CTkFrame):
