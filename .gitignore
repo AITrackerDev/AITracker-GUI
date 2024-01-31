@@ -19,3 +19,4 @@ test.py
 settings.json
 *.jpg
 *.hdf5
+env/
