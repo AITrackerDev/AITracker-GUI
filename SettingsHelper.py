@@ -17,7 +17,7 @@ class SettingsOption(ctk.CTkFrame):
         
         self.input_var = ctk.StringVar(value="")
         self.input = ctk.CTkEntry(self, textvariable=self.input_var)
-        self.input.bind("<KeyRelease>", self.validate_pin)
+        self.input.bind("<KeyRelease>", self.validate_pin(self.input_var.get().strip()))
         
         self.check_var = ctk.BooleanVar(value=False)
         self.check = ctk.CTkCheckBox(self, variable=self.check_var, onvalue=True, offvalue=False, text="Constant Input")
@@ -32,8 +32,8 @@ class SettingsOption(ctk.CTkFrame):
     def name(self) -> str:
         return self._name
         
-    def validate_pin(self, *args):
-        if re.match("^C[1-9]$|^D[0-7]$", self.input_var.get().strip()):
+    def validate_pin(self, text, *args):
+        if re.match("^C[1-9]$|^D[0-7]$", text):
             self.input.configure(text_color="green")
         else:
             self.input.configure(text_color="red")
@@ -47,6 +47,7 @@ class SettingsOption(ctk.CTkFrame):
     def set_settings(self, settings):
         self.switch_var.set(settings[0])
         self.input_var.set(settings[1])
+        self.validate_pin(settings[1])
         self.check_var.set(settings[2])
 
 class NumberEntry(ctk.CTkFrame):
