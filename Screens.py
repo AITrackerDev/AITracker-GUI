@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from SettingsHelper import SettingsOption, NumberEntry, load_settings, save_settings_to_json
+from SettingsHelper import SettingsOption, SingleEntry, load_settings, save_settings_to_json
 from LaunchHelper import IndicatorFrame
 import re
 
@@ -74,7 +74,7 @@ class SettingsScreen(ctk.CTkFrame):
         self.down_left = SettingsOption(settings_frame, name="Down Left")
         self.down_right = SettingsOption(settings_frame, name="Down Right")
         self.blink = SettingsOption(settings_frame, name="Blink")
-        self.look_duration = NumberEntry(settings_frame, name="Look Duration")
+        self.look_duration = SingleEntry(settings_frame, name="Look Duration")
         
         self.settings = [
             self.up, self.down, self.left, self.right, self.up_left,
