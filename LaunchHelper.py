@@ -12,11 +12,12 @@ class IndicatorFrame(ctk.CTkFrame):
         self._active = settings[0]
         self._pin = settings[1]
         self._constant = settings[2]
+        self._out_duration = settings[3]
         self.configure(fg_color="white" if self._active else "transparent")
         
         # testing code
         if self._active:
-            self.bind("<Button-1>", lambda event: self.change_color("green" if self.cget("fg_color") == "white" else "white", event))
+            self.bind("<Button-1>", self.change_color)
     
     @property
     def active(self) -> bool:
@@ -30,8 +31,15 @@ class IndicatorFrame(ctk.CTkFrame):
     def constant(self) -> bool:
         return self._constant
     
-    def change_color(self, color, event):
-        self.configure(fg_color=color)
+    def change_color(self, event):
+        if self._constant and self._active:
+            if self.cget("fg_color") == "white":
+                self.configure(fg_color="green")
+            else:
+                self.configure(fg_color="white")
+        elif self._active:
+            self.configure(fg_color="green")
+            self.after(self._out_duration, lambda: self.configure(fg_color="white"))
         
 '''
 function to start a camera feed
