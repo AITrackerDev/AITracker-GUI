@@ -31,6 +31,7 @@ class IndicatorFrame(ctk.CTkFrame):
     def constant(self) -> bool:
         return self._constant
     
+    # change the color of the frame depending on what the settings are
     def change_color(self, event):
         if self._constant and self._active:
             if self.cget("fg_color") == "white":
