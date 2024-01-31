@@ -1,89 +1,118 @@
 '''
-All of the necessary functions for the settings screen should be located in here.
+All of the necessary functions and classes for the settings screen should be located in here.
 '''
 import customtkinter as ctk
 import json
 import re
 
+'''
+A class that holds 2 entry widgets, switch, label, and checkbox for a specific setting.
+'''
 class SettingsOption(ctk.CTkFrame):
     def __init__(self, root, name):
         super().__init__(root)
         
-        #setting widgets
+        #setting info
         self._name = name
-        self.label = ctk.CTkLabel(self, text=name, font=ctk.CTkFont(size=20))
-        self.switch_var = ctk.BooleanVar(value=True)
-        self.switch = ctk.CTkSwitch(self, variable=self.switch_var, onvalue=True, offvalue=False, text="Active")
+        self._label = ctk.CTkLabel(self, text=name, font=ctk.CTkFont(size=20))
         
-        self.input_var = ctk.StringVar(value="")
-        self.input = ctk.CTkEntry(self, textvariable=self.input_var)
-        self.input.bind("<KeyRelease>", self.validate_pin)
+        # active switch
+        self._switch_var = ctk.BooleanVar(value=True)
+        self._switch = ctk.CTkSwitch(self, variable=self._switch_var, onvalue=True, offvalue=False, text="Active")
         
-        self.check_var = ctk.BooleanVar(value=False)
-        self.check = ctk.CTkCheckBox(self, variable=self.check_var, onvalue=True, offvalue=False, text="Constant Input")
+        # pin entry
+        self._pin_var = ctk.StringVar(value="")
+        self._pin_input = ctk.CTkEntry(self, textvariable=self._pin_var)
+        self._pin_input.bind("<KeyRelease>", self._validate_pin)
+        
+        # output duration entry
+        self._duration_input = NumberEntry(self)
+        
+        # constant input widgets
+        self._check_var = ctk.BooleanVar(value=False)
+        self._check = ctk.CTkCheckBox(self, variable=self._check_var, onvalue=True, offvalue=False, text="Constant")
         
         #setting placements
-        self.label.grid(row=0, column=0, padx=5, pady=5)
-        self.switch.grid(row=0, column=1, padx=5, pady=5)
-        self.input.grid(row=1, column=0, padx=5, pady=5)
-        self.check.grid(row=1, column=1, padx=5, pady=5)
+        x_pad,y_pad = 5,5
+        self._label.grid(row=0, column=0, columnspan=2, padx=x_pad, pady=y_pad)
+        self._check.grid(row=0, column=2, padx=x_pad, pady=y_pad)
+        self._switch.grid(row=0, column=3, padx=x_pad, pady=y_pad)
+        self._pin_input.grid(row=1, column=0, columnspan=2, padx=x_pad, pady=y_pad)
+        self._duration_input.grid(row=1, column=2, columnspan=2, padx=x_pad, pady=y_pad)
     
     @property
     def name(self) -> str:
         return self._name
         
-    def validate_pin(self, *args):
-        if re.match("^C[1-9]$|^D[0-7]$", self.input_var.get().strip()):
-            self.input.configure(text_color="green")
+    # checks if the pin matches the regex 
+    def _validate_pin(self, *args):
+        if re.match("^C[1-9]$|^D[0-7]$", self._pin_var.get().strip()):
+            self._pin_input.configure(text_color="green")
         else:
-            self.input.configure(text_color="red")
-        return True;
+            self._pin_input.configure(text_color="red")
     
     # returns a dictionary mapping for the setting name, and all of the values  
     def get_settings(self):
-        return (self.switch_var.get(), self.input_var.get(), self.check_var.get())
+        return (self._switch_var.get(), self._pin_var.get(), self._check_var.get(), self._duration_input.get_numeric_value())
     
     # sets the settings
     def set_settings(self, settings):
-        self.switch_var.set(settings[0])
-        self.input_var.set(settings[1])
+        self._switch_var.set(settings[0])
+        self._pin_var.set(settings[1])
+        self._check_var.set(settings[2])
+        self._duration_input.set_numeric_value(settings[3])
+        
+        # if the pin was saved incorrectly, set the text color to indicate
         if re.match("^C[1-9]$|^D[0-7]$", settings[1]):
-            self.input.configure(text_color="green")
+            self._pin_input.configure(text_color="green")
         else:
-            self.input.configure(text_color="red")
-        self.check_var.set(settings[2])
+            self._pin_input.configure(text_color="red")
 
-class NumberEntry(ctk.CTkFrame):
+'''
+A setting option that only takes in a number.
+'''
+class SingleEntry(ctk.CTkFrame):
     def __init__(self, root, name):
         super().__init__(root)
-        validate_cmd = root.register(self.validate_input)
         self.name = name
         
         # widgets
         label = ctk.CTkLabel(self, text=name, font=ctk.CTkFont(size=20))
-        self.entry_var = ctk.StringVar(value="0")
-        entry = ctk.CTkEntry(self, textvariable=self.entry_var, validate="key", validatecommand=(validate_cmd, "%P"))
+        self._entry = NumberEntry(self)
         
         # placements
         label.grid(row=0, column=0, padx=5, pady=5)
-        entry.grid(row=1, column=0, padx=5, pady=5)
+        self._entry.grid(row=1, column=0, padx=5, pady=5)
     
-    # validates that only a number can be an input to the field
-    def validate_input(self, new_value):
-        try:
-            if new_value == "":
-                return True
-            
-            float(new_value)
-            return True
-        except ValueError:
-            return False
-    
+    # validates that only a number can be an pin_input to the field
     def get_value(self):
-        return {self.name:int(self.entry_var.get())}
+        return {self.name:int(self._entry.get_numeric_value())}
         
     def set_value(self, input_value):
-        self.entry_var.set(str(input_value))
+        self._entry.set_numeric_value(input_value)
+
+'''
+An entry widget that only allows integers to be put into it.
+'''  
+class NumberEntry(ctk.CTkEntry):
+    def __init__(self, root):
+        super().__init__(root)
+        self._input_var = ctk.StringVar(value="")
+        
+        # ensures only a number can be put into the text field
+        self.configure(validate="key", validatecommand=(self.register(self._validate_input), '%S', '%P'), textvariable=self._input_var)
+
+    # ensures only a number can be put into the text field
+    def _validate_input(self, char, entry_value):
+        return char.isdigit() or char == ""
+    
+    # get number as an int
+    def get_numeric_value(self):
+        return int(self._input_var.get())
+
+    # set the value
+    def set_numeric_value(self, value):
+        self._input_var.set(str(value))
 
 def load_settings(json_path):
     try:
