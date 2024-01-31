@@ -13,6 +13,8 @@ class IndicatorFrame(ctk.CTkFrame):
         self._pin = settings[1]
         self._constant = settings[2]
         self._out_duration = settings[3]
+        
+        # don't show the frame if the setting isn't active
         self.configure(fg_color="white" if self._active else "transparent")
         
         # testing code
