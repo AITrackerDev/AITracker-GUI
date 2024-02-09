@@ -1,7 +1,8 @@
 import customtkinter as ctk
-from SettingsHelper import SettingsOption, SingleEntry, load_settings, save_settings_to_json
+from SettingsHelper import SettingsOption, SingleEntry, load_settings, save_settings_to_json, PIN_REGEX
 from LaunchHelper import IndicatorFrame
 import re
+import usb.core
 
 class MainScreen(ctk.CTkFrame):
     def __init__(self, root, show_screen_callback):
@@ -11,7 +12,7 @@ class MainScreen(ctk.CTkFrame):
         #widget creation
         _title_label = ctk.CTkLabel(self, text="Welcome to aiTracker!", font=ctk.CTkFont(size=40))
         _subtitle_label = ctk.CTkLabel(self, text="Click below to get started", font=ctk.CTkFont(size=25))
-        _launch_button = ctk.CTkButton(self, text="Launch", corner_radius=10, command=lambda: self.show_screen_callback(LaunchScreen))
+        _launch_button = ctk.CTkButton(self, text="Launch", corner_radius=10, command=lambda: self._load_launch_screen())
         _about_button = ctk.CTkButton(self, text="Help", corner_radius=10, command=lambda: self.show_screen_callback(AboutScreen))
         _settings_button = ctk.CTkButton(self, text="Settings", corner_radius=10, command=lambda: self.show_screen_callback(SettingsScreen))
         _quit_button = ctk.CTkButton(self, text="Quit", corner_radius=10, command=lambda: root.destroy())
@@ -23,6 +24,22 @@ class MainScreen(ctk.CTkFrame):
         _about_button.place(relx=.5, rely=0.6, anchor=ctk.CENTER)
         _settings_button.place(relx=.5, rely=0.65, anchor=ctk.CENTER)
         _quit_button.place(relx=.5, rely=0.7, anchor=ctk.CENTER)
+        
+    # checks if the FT232H board is plugged in, and won't continue unless it is
+    def _load_launch_screen(self):
+        _usb_devices = usb.core.find(find_all=True)
+        _device_found = False
+
+        # check if the FT232H breakout board is among the connected devices
+        for device in _usb_devices:
+            if device.idVendor == 0x0403 and device.idProduct == 0x6014:
+                _device_found = True
+                self.show_screen_callback(LaunchScreen)
+        
+        # display warning if not
+        if not _device_found:
+            warning = ctk.CTkLabel(self, text="Please plug in FT232H breakout board to continue.", font=ctk.CTkFont(size=25))
+            warning.place(relx=.5, rely=.45, anchor=ctk.CENTER)
 
 class AboutScreen(ctk.CTkFrame):
     def __init__(self, root, show_screen_callback):
@@ -108,7 +125,7 @@ class SettingsScreen(ctk.CTkFrame):
             current_settings = setting.get_settings()
             
             # if the setting is active, check if the pin doesn't match
-            if current_settings[0] and not re.match("^C[1-9]$|^D[0-7]$", current_settings[1]):
+            if current_settings[0] and not re.match(PIN_REGEX, current_settings[1]):
                 invalid_pin = True
                 break
             new_settings.update({setting.name:current_settings})
