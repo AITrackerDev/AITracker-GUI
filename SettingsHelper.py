@@ -8,6 +8,8 @@ import re
 '''
 A class that holds 2 entry widgets, switch, label, and checkbox for a specific setting.
 '''
+
+PIN_REGEX = "^C[0-7]$|^D[4-7]$"
 class SettingsOption(ctk.CTkFrame):
     def __init__(self, root, name):
         super().__init__(root)
@@ -46,7 +48,7 @@ class SettingsOption(ctk.CTkFrame):
         
     # checks if the pin matches the regex 
     def _validate_pin(self, *args):
-        if re.match("^C[1-9]$|^D[0-7]$", self._pin_var.get().strip()):
+        if re.match(PIN_REGEX, self._pin_var.get().strip()):
             self._pin_input.configure(text_color="green")
         else:
             self._pin_input.configure(text_color="red")
@@ -63,7 +65,7 @@ class SettingsOption(ctk.CTkFrame):
         self._duration_input.set_numeric_value(settings[3])
         
         # if the pin was saved incorrectly, set the text color to indicate
-        if re.match("^C[1-9]$|^D[0-7]$", settings[1]):
+        if re.match(PIN_REGEX, settings[1]):
             self._pin_input.configure(text_color="green")
         else:
             self._pin_input.configure(text_color="red")
