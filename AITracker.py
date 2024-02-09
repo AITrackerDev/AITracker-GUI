@@ -4,14 +4,6 @@ This file contains all of the necessary code to start the application and run th
 
 import os
 import platform
-
-# sets environment variables before loading board module to prevent errors
-os.environ["BLINKA_FT232H"] = "1"
-if platform.system() == "Darwin":
-    os.environ["DYLD_LIBRARY_PATH"] = "/usr/local/Cellar/libusb/1.0.26/lib"
-elif platform.system() == "Windows":
-    print("idk i'm on a mac")
-
 import ctypes
 import cv2
 import tkinter as tk
@@ -108,8 +100,14 @@ class AITracker(ctk.CTk):
         self.cap.release()
 
 if __name__ == "__main__":
-    # fixes the GUI being bugged in windows
+    # adafruit environment variable
+    os.environ["BLINKA_FT232H"] = "1"
+    
+    # platform specific fixes
     if platform.system() == "Windows":
         ctypes.windll.shcore.SetProcessDpiAwareness(2)
+    elif platform.system() == "Darwin":
+        os.environ["DYLD_LIBRARY_PATH"] = "/usr/local/Cellar/libusb/1.0.26/lib"
+
     app = AITracker()
     app.mainloop()
