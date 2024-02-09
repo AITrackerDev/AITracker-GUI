@@ -3,7 +3,7 @@
     true,
     "C1",
     false,
-    2000
+    5000
   ],
   "Down": [
     true,
@@ -15,7 +15,7 @@
     true,
     "C3",
     false,
-    2000
+    20
   ],
   "Right": [
     true,
@@ -24,32 +24,32 @@
     2000
   ],
   "Up Left": [
-    true,
+    false,
     "C5",
     false,
     2000
   ],
   "Up Right": [
-    true,
+    false,
     "C6",
     false,
     2000
   ],
   "Down Left": [
-    true,
+    false,
     "C7",
     false,
     2000
   ],
   "Down Right": [
-    true,
-    "C8",
+    false,
+    "C0",
     false,
     2000
   ],
   "Blink": [
     true,
-    "C9",
+    "D4",
     false,
     2000
   ],
