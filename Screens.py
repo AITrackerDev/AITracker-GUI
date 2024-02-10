@@ -202,8 +202,6 @@ class LaunchScreen(ctk.CTkFrame):
         duration = self._look_duration
         
         while self._active:
-            # crop image to our predetermined template
-            
             # predict output of network
             prediction = model.predict("IMAGE GOES HERE")
             
@@ -211,7 +209,6 @@ class LaunchScreen(ctk.CTkFrame):
             output[prediction].send_output()
         '''
         basic flow should be the following:
-            crop the eyes to our predetermined template
             run model.predict on the image
             if the model.predict returns the same value for look_duration seconds
                 run self._outputs[predicted_value].send_output() to send the output
