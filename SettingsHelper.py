@@ -10,6 +10,7 @@ A class that holds 2 entry widgets, switch, label, and checkbox for a specific s
 '''
 
 PIN_REGEX = "^C[0-7]$|^D[4-7]$"
+
 class SettingsOption(ctk.CTkFrame):
     def __init__(self, root, name):
         super().__init__(root)
@@ -25,7 +26,7 @@ class SettingsOption(ctk.CTkFrame):
         # pin entry
         self._pin_var = ctk.StringVar(value="")
         self._pin_input = ctk.CTkEntry(self, textvariable=self._pin_var)
-        self._pin_input.bind("<KeyRelease>", self._validate_pin)
+        self._pin_input.bind("<KeyRelease>", self._validate_pin())
         
         # output duration entry
         self._duration_input = NumberEntry(self)

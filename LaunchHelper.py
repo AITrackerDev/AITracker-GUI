@@ -27,7 +27,7 @@ class IndicatorFrame(ctk.CTkFrame):
         
         # testing code
         if self._active:
-            self.bind("<Button-1>", self.change_color)
+            self.bind("<Button-1>", self.send_output())
     
     @property
     def active(self) -> bool:
@@ -38,7 +38,7 @@ class IndicatorFrame(ctk.CTkFrame):
         return self._constant
     
     # change the color of the frame depending on what the settings are
-    def change_color(self, event):
+    def send_output(self, event):
         if self.active:
             if self._constant:
                 if self.cget("fg_color") == "white":
