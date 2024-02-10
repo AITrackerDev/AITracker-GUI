@@ -183,7 +183,7 @@ class LaunchScreen(ctk.CTkFrame):
         self._down.place(relx=0.5, rely=1, anchor=ctk.S)
         self._down_right.place(relx=1, rely=1, anchor=ctk.SE)
         
-    async def _track_blink(self):
+    async def track_blink(self, image):
         output = self._blink
         
         while output.active and self._active:
@@ -196,13 +196,13 @@ class LaunchScreen(ctk.CTkFrame):
                 
             '''
         
-    async def _track_eyes(self):
+    async def track_eyes(self, image):
         model = self._model
         output = self._outputs
         duration = self._look_duration
         
         while self._active:
-            # crop eyes code goes here
+            # crop image to our predetermined template
             
             # predict output of network
             prediction = model.predict("IMAGE GOES HERE")
