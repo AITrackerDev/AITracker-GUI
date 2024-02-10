@@ -3,6 +3,7 @@ from SettingsHelper import SettingsOption, SingleEntry, load_settings, save_sett
 from LaunchHelper import IndicatorFrame
 import re
 import usb.core
+import tensorflow as tf
 
 class MainScreen(ctk.CTkFrame):
     def __init__(self, root, show_screen_callback):
@@ -144,6 +145,12 @@ class LaunchScreen(ctk.CTkFrame):
         super().__init__(root, width=root.winfo_width(), height=root.winfo_height())
         self.show_screen_callback = show_screen_callback
         
+        # loaded AITracker model
+        self._model = tf.keras.models.load_model("image_classifier.model")
+        
+        # value to know whether or not screen has been exited
+        self._active = True
+        
         # leave the screen when "b" is pressed
         root.bind("b", lambda event: self.leave_screen(root))
         self.focus_set()
@@ -159,6 +166,11 @@ class LaunchScreen(ctk.CTkFrame):
         self._down_left = IndicatorFrame(self, _settings["Down Left"])
         self._down_right = IndicatorFrame(self, _settings["Down Right"])
         self._blink = IndicatorFrame(self, _settings["Blink"])
+        self._look_duration = _settings["Look Duration"]
+        
+        self._outputs = {'north':self._up, 'south':self._down, 'west':self._left, 'east':self._right, 
+            'north_west':self._up_left, 'north_east':self._up_right, 'south_west':self._down_left, 
+            'south_east':self._down_right}
         
         #placing squares
         self._up_left.place(relx=0, rely=0, anchor=ctk.NW)
@@ -171,6 +183,41 @@ class LaunchScreen(ctk.CTkFrame):
         self._down.place(relx=0.5, rely=1, anchor=ctk.S)
         self._down_right.place(relx=1, rely=1, anchor=ctk.SE)
         
+    async def _track_blink(self):
+        output = self._blink
+        
+        while output.active and self._active:
+            print("blinks!")
+            
+            '''
+            basic flow should be the following:
+                if a blink has happened for a certain amount of time
+                    output.send_output()
+                
+            '''
+        
+    async def _track_eyes(self):
+        model = self._model
+        output = self._outputs
+        duration = self._look_duration
+        
+        while self._active:
+            # crop eyes code goes here
+            
+            # predict output of network
+            prediction = model.predict("IMAGE GOES HERE")
+            
+            # after a duration amount of time and the output is the same, send the output (logic needed)
+            output[prediction].send_output()
+        '''
+        basic flow should be the following:
+            crop the eyes to our predetermined template
+            run model.predict on the image
+            if the model.predict returns the same value for look_duration seconds
+                run self._outputs[predicted_value].send_output() to send the output
+        '''
+        
     def leave_screen(self, root):
-        root.unbind('b')
+        self._active = False
         self.show_screen_callback(MainScreen)
+        root.unbind('b')
