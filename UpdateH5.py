@@ -134,7 +134,6 @@ from matplotlib import pyplot as plt
 #     print(f"Data from '{input_h5_file1}' and '{input_h5_file2}' combined and saved to '{output_h5_file}'.")
 #
 #
-# # Example usage:
 # input_h5_file1_path = 'H5Demo/output_train.h5'
 # input_h5_file2_path = 'H5Demo/output_test.h5'
 # output_h5_file_path = 'H5Demo/eye_data.h5'
@@ -182,7 +181,7 @@ def h5_to_jpg_batch_with_labels(h5_file_path, output_folder):
     except Exception as e:
         print(f"Error: {e}")
 
-# Example usage:
+
 h5_file_path = 'H5Demo/final_eye_data.h5'
 output_folder = 'NetworkDemo'
 h5_to_jpg_batch_with_labels(h5_file_path, output_folder)
