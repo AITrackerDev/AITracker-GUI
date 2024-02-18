@@ -2,7 +2,7 @@ import customtkinter as ctk
 from SettingsHelper import SettingsOption, SingleEntry, load_settings, save_settings_to_json, PIN_REGEX
 from LaunchHelper import IndicatorFrame
 import re
-import usb.core
+# import usb.core
 import cv2
 from NetworkInput import network_image_crop, IMAGE_SIZE
 from PIL import Image, ImageTk
@@ -33,14 +33,14 @@ class MainScreen(ctk.CTkFrame):
         
     # checks if the FT232H board is plugged in, and won't continue unless it is
     def _load_launch_screen(self):
-        _usb_devices = usb.core.find(find_all=True)
+        # _usb_devices = usb.core.find(find_all=True)
         _device_found = False
 
         # check if the FT232H breakout board is among the connected devices
-        for device in _usb_devices:
-            if device.idVendor == 0x0403 and device.idProduct == 0x6014:
-                _device_found = True
-                self.show_screen_callback(LaunchScreen)
+        # for device in _usb_devices:
+        #     if device.idVendor == 0x0403 and device.idProduct == 0x6014:
+        #         _device_found = True
+        #         self.show_screen_callback(LaunchScreen)
         
         # display warning if not
         if not _device_found:
