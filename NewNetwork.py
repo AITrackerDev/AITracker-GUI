@@ -56,7 +56,7 @@ class_names = label_encoder.classes_
 model = models.load_model('image_classifier.model')
 
 # Load and preprocess the image
-img = cv.imread('NetworkDemo/North West_image_4.jpg')
+img = cv.imread('NetworkDemo/North_image_2.jpg')
 #img = cv.cvtColor(img, cv.COLOR_RGB2GRAY)
 img = cv.resize(img, (190, 80))  # Resize the image to match the input size used during training
 img = img / 255.0  # Normalize the pixel values to be between 0 and 1

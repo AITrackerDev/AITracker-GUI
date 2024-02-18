@@ -39,7 +39,7 @@ class MainScreen(ctk.CTkFrame):
             if device.idVendor == 0x0403 and device.idProduct == 0x6014:
                 _device_found = True
                 self.show_screen_callback(LaunchScreen)
-        
+
         # display warning if not
         if not _device_found:
             warning = ctk.CTkLabel(self, text="Please plug in FT232H breakout board to continue.", font=ctk.CTkFont(size=25))
