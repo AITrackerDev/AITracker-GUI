@@ -4,6 +4,9 @@ from LaunchHelper import IndicatorFrame
 import re
 import usb.core
 import tensorflow as tf
+import cv2
+from NetworkInput import network_image_crop, IMAGE_SIZE
+from PIL import Image, ImageTk
 
 class MainScreen(ctk.CTkFrame):
     def __init__(self, root, show_screen_callback):
@@ -168,6 +171,7 @@ class LaunchScreen(ctk.CTkFrame):
         self._blink = IndicatorFrame(self, _settings["Blink"])
         self._look_duration = _settings["Look Duration"]
         
+        # dictionary for the outputs being able to be sent out over hardware
         self._outputs = {'north':self._up, 'south':self._down, 'west':self._left, 'east':self._right, 
             'north_west':self._up_left, 'north_east':self._up_right, 'south_west':self._down_left, 
             'south_east':self._down_right}
@@ -183,38 +187,34 @@ class LaunchScreen(ctk.CTkFrame):
         self._down.place(relx=0.5, rely=1, anchor=ctk.S)
         self._down_right.place(relx=1, rely=1, anchor=ctk.SE)
         
-    async def track_blink(self, image):
-        output = self._blink
+        # camera related code and widgets
+        self.cam = cv2.VideoCapture(0)
+        self.canvas = ctk.CTkCanvas(self, width=IMAGE_SIZE[0], height=IMAGE_SIZE[1])
+        self.canvas.place(relx=0.5, rely=0.3, anchor=ctk.CENTER)
         
-        while output.active and self._active:
-            print("blinks!")
+        self.update_camera()
+    
+    # update camera feed and display cropped image   
+    def update_camera(self):
+        ret, frame = self.cam.read()
+        if ret:
+            # crop the image to our network's expectation
+            network_image = network_image_crop(cv2.flip(frame, 1))
+            image, correct = network_image[0], network_image[1]
             
-            '''
-            basic flow should be the following:
-                if a blink has happened for a certain amount of time
-                    output.send_output()
+            # if the image is valid
+            if correct:
+                # put image on screen if it's properly resized
+                self.photo = ImageTk.PhotoImage(image=Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB)))
+                self.canvas.create_image(0, 0, image=self.photo, anchor=ctk.NW)
                 
-            '''
-        
-    async def track_eyes(self, image):
-        model = self._model
-        output = self._outputs
-        duration = self._look_duration
-        
-        while self._active:
-            # predict output of network
-            prediction = model.predict("IMAGE GOES HERE")
-            
-            # after a duration amount of time and the output is the same, send the output (logic needed)
-            output[prediction].send_output()
-        '''
-        basic flow should be the following:
-            run model.predict on the image
-            if the model.predict returns the same value for look_duration seconds
-                run self._outputs[predicted_value].send_output() to send the output
-        '''
+                # network and output logic should go here
+            else:
+                print("we'll probably put a label here when the eyes aren't being seen")
+        self.after(10, self.update_camera)
         
     def leave_screen(self, root):
         self._active = False
-        self.show_screen_callback(MainScreen)
+        self.cam.release()
         root.unbind('b')
+        self.show_screen_callback(MainScreen)

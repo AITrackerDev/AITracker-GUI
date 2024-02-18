@@ -1,8 +1,8 @@
 {
   "Up": [
     true,
-    "C1",
-    false,
+    "C4",
+    true,
     5000
   ],
   "Down": [
@@ -24,25 +24,25 @@
     2000
   ],
   "Up Left": [
-    false,
-    "C5",
+    true,
+    "C7",
     false,
     2000
   ],
   "Up Right": [
+    true,
+    "C1",
     false,
-    "C6",
-    false,
-    2000
+    10000
   ],
   "Down Left": [
-    false,
+    true,
     "C7",
     false,
     2000
   ],
   "Down Right": [
-    false,
+    true,
     "C0",
     false,
     2000
