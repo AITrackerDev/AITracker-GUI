@@ -27,7 +27,7 @@ class IndicatorFrame(ctk.CTkFrame):
         
         # testing code
         if self._active:
-            self.bind("<Button-1>", self.send_output())
+            self.bind("<Button-1>", self.send_output)
     
     @property
     def active(self) -> bool:
