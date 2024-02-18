@@ -5,9 +5,6 @@ This file contains all of the necessary code to start the application and run th
 import os
 import platform
 import ctypes
-import cv2
-import tkinter as tk
-from tkinter import Canvas, PhotoImage
 import customtkinter as ctk
 from Screens import MainScreen
 
@@ -20,7 +17,7 @@ class AITracker(ctk.CTk):
         self.title("aiTracker")
         ctk.set_appearance_mode("dark")
         ctk.set_default_color_theme("blue")
-        self.geometry("1080x720")  # Original size
+        self.geometry("1080x720")
         self.attributes('-topmost', 1)
         self.update()
         self.attributes('-topmost', 0)
@@ -28,11 +25,11 @@ class AITracker(ctk.CTk):
         self.show_screen(MainScreen)
         
     def show_screen(self, screen_class):
-        # Destroy current screen if exists
+        # destroy current screen if exists
         if self.current_screen:
             self.current_screen.destroy()
 
-        # Create and display the requested screen
+        # create and display the requested screen
         self.current_screen = screen_class(self, self.show_screen)
         self.current_screen.pack()
 
