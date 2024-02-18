@@ -7,7 +7,6 @@ import tensorflow as tf
 import cv2
 from NetworkInput import network_image_crop, IMAGE_SIZE
 from PIL import Image, ImageTk
-import time
 
 class MainScreen(ctk.CTkFrame):
     def __init__(self, root, show_screen_callback):
