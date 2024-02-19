@@ -28,17 +28,9 @@ class IndicatorFrame(ctk.CTkFrame):
         # don't show the frame if the setting isn't active
         self.configure(fg_color="white" if self._active else "transparent")
     
-    @property
-    def active(self) -> bool:
-        return self._active
-    
-    @property
-    def constant(self) -> bool:
-        return self._constant
-    
-    # change the color of the frame depending on what the settings are
+    # send outputs over USB and change the color of the frame
     def send_output(self):
-        if self.active:
+        if self._active:
             if self._constant:
                 if self.cget("fg_color") == "white":
                     self.configure(fg_color="green")
@@ -59,13 +51,3 @@ class IndicatorFrame(ctk.CTkFrame):
         global board, digitalio
         import board
         import digitalio
-        
-'''
-function to start a camera feed
-
-function to end a camera feed
-
-function to take frame from camera and crop it to data collection like ratio
-fix the size of the image
-enhance it using opencv
-'''
