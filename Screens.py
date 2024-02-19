@@ -196,15 +196,15 @@ class LaunchScreen(ctk.CTkFrame):
         self._down_right.place(relx=1, rely=1, anchor=ctk.SE)
         
         # camera related code and widgets
-        self.cam = cv2.VideoCapture(0)
-        self.canvas = ctk.CTkCanvas(self, width=self._model.image_size[0], height=self._model.image_size[1])
-        self.canvas.place(relx=0.5, rely=0.3, anchor=ctk.CENTER)
+        self._cam = cv2.VideoCapture(0)
+        self._canvas = ctk.CTkCanvas(self, width=self._model.image_size[0], height=self._model.image_size[1])
+        self._canvas.place(relx=0.5, rely=0.3, anchor=ctk.CENTER)
         
         self._update_camera()
     
     # update camera feed and display cropped image   
     def _update_camera(self):
-        ret, frame = self.cam.read()
+        ret, frame = self._cam.read()
         if ret:
             # crop the image to our network's expectation
             image_crop = self._model.process_image(cv2.flip(frame, 1))
@@ -213,8 +213,8 @@ class LaunchScreen(ctk.CTkFrame):
             # if the image is valid
             if correct:
                 # put image on screen if it's properly resized
-                self.photo = ImageTk.PhotoImage(image=Image.fromarray(cv2.cvtColor(display_image, cv2.COLOR_BGR2RGB)))
-                self.canvas.create_image(0, 0, image=self.photo, anchor=ctk.NW)
+                self._photo = ImageTk.PhotoImage(image=Image.fromarray(cv2.cvtColor(display_image, cv2.COLOR_BGR2RGB)))
+                self._canvas.create_image(0, 0, image=self._photo, anchor=ctk.NW)
                 
                 # save image to make predictions on
                 cv2.imwrite('eye_image.jpg', display_image)
@@ -234,6 +234,6 @@ class LaunchScreen(ctk.CTkFrame):
         if os.path.exists('eye_image.jpg'):
             os.remove('eye_image.jpg')
 
-        self.cam.release()
+        self._cam.release()
         root.unbind('b')
         self.show_screen_callback(MainScreen)
