@@ -205,20 +205,20 @@ class LaunchScreen(ctk.CTkFrame):
         ret, frame = self.cam.read()
         if ret:
             # crop the image to our network's expectation
-            network_image = network_image_crop(cv2.flip(frame, 1))
-            image_display, image_network, correct = network_image[0], network_image[0]/255.0, network_image[1]
+            image_crop = network_image_crop(cv2.flip(frame, 1))
+            display_image, network_image, correct = image_crop[0], image_crop[0]/255.0, image_crop[1]
             
             # if the image is valid
             if correct:
                 # put image on screen if it's properly resized
-                self.photo = ImageTk.PhotoImage(image=Image.fromarray(cv2.cvtColor(image_display, cv2.COLOR_BGR2RGB)))
-                cv2.imwrite('eye_image.jpg', image_display)
+                self.photo = ImageTk.PhotoImage(image=Image.fromarray(cv2.cvtColor(display_image, cv2.COLOR_BGR2RGB)))
+                cv2.imwrite('eye_image.jpg', display_image)
                 self.canvas.create_image(0, 0, image=self.photo, anchor=ctk.NW)
                 
                 # network and output logic should go here
                 prediction = self._model.predict_direction(cv2.imread('eye_image.jpg'))
                 print(prediction)
-                IndicatorFrame.send_output(self, self._outputs[prediction])
+                #self._outputs[prediction].send_output()
 
                 if os.path.exists('images/eye_image.jpg'):
                     os.remove('images/eye_image.jpg')
