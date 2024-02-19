@@ -1,12 +1,16 @@
+import os
+
 import customtkinter as ctk
 from SettingsHelper import SettingsOption, SingleEntry, load_settings, save_settings_to_json, PIN_REGEX
 from LaunchHelper import IndicatorFrame
 import re
-import usb.core
-import tensorflow as tf
+# import usb.core
 import cv2
 from NetworkInput import network_image_crop, IMAGE_SIZE
 from PIL import Image, ImageTk
+from AITrackerModel import AITrackerModel
+
+DEBUG = True
 
 class MainScreen(ctk.CTkFrame):
     def __init__(self, root, show_screen_callback):
@@ -31,19 +35,21 @@ class MainScreen(ctk.CTkFrame):
         
     # checks if the FT232H board is plugged in, and won't continue unless it is
     def _load_launch_screen(self):
-        _usb_devices = usb.core.find(find_all=True)
+        # _usb_devices = usb.core.find(find_all=True)
         _device_found = False
 
-        # check if the FT232H breakout board is among the connected devices
-        for device in _usb_devices:
-            if device.idVendor == 0x0403 and device.idProduct == 0x6014:
-                _device_found = True
-                self.show_screen_callback(LaunchScreen)
+        # for device in _usb_devices:
+        #     if device.idVendor == 0x0403 and device.idProduct == 0x6014:
+        #         _device_found = True
+        #         self.show_screen_callback(LaunchScreen)
 
         # display warning if not
         if not _device_found:
             warning = ctk.CTkLabel(self, text="Please plug in FT232H breakout board to continue.", font=ctk.CTkFont(size=25))
             warning.place(relx=.5, rely=.45, anchor=ctk.CENTER)
+        
+        if DEBUG:
+            self.show_screen_callback(LaunchScreen)
 
 class AboutScreen(ctk.CTkFrame):
     def __init__(self, root, show_screen_callback):
@@ -120,7 +126,7 @@ class SettingsScreen(ctk.CTkFrame):
             setting.set_settings(settings_map[setting.name])
         self._look_duration.set_value(settings_map["Look Duration"])
     
-    # saves all of the settings and returns back to the main screen
+    # saves all the settings and returns back to the main screen
     def _save_settings(self):
         new_settings = dict()
         invalid_pin = False
@@ -148,10 +154,10 @@ class LaunchScreen(ctk.CTkFrame):
         super().__init__(root, width=root.winfo_width(), height=root.winfo_height())
         self.show_screen_callback = show_screen_callback
         
-        # loaded AITracker model
-        self._model = tf.keras.models.load_model("image_classifier.model")
+        # network and model code
+        self._model = AITrackerModel('image_classifier.model', 'H5Demo/final_eye_data.h5')
         
-        # value to know whether or not screen has been exited
+        # value to know whether the screen has been exited
         self._active = True
         
         # leave the screen when "b" is pressed
@@ -172,9 +178,9 @@ class LaunchScreen(ctk.CTkFrame):
         self._look_duration = _settings["Look Duration"]
         
         # dictionary for the outputs being able to be sent out over hardware
-        self._outputs = {'north':self._up, 'south':self._down, 'west':self._left, 'east':self._right, 
-            'north_west':self._up_left, 'north_east':self._up_right, 'south_west':self._down_left, 
-            'south_east':self._down_right}
+        self._outputs = {'b\'North\'':self._up, 'b\'South\'':self._down, 'b\'West\'':self._left, 'b\'East\'':self._right,
+            'b\'North West\'':self._up_left, 'b\'North East\'':self._up_right, 'b\'South West\'':self._down_left,
+            'b\'South East\'':self._down_right}
         
         #placing squares
         self._up_left.place(relx=0, rely=0, anchor=ctk.NW)
@@ -192,26 +198,37 @@ class LaunchScreen(ctk.CTkFrame):
         self.canvas = ctk.CTkCanvas(self, width=IMAGE_SIZE[0], height=IMAGE_SIZE[1])
         self.canvas.place(relx=0.5, rely=0.3, anchor=ctk.CENTER)
         
-        self.update_camera()
+        self._update_camera()
     
     # update camera feed and display cropped image   
-    def update_camera(self):
+    def _update_camera(self):
         ret, frame = self.cam.read()
         if ret:
             # crop the image to our network's expectation
             network_image = network_image_crop(cv2.flip(frame, 1))
-            image, correct = network_image[0], network_image[1]
+            image_display, image_network, correct = network_image[0], network_image[0]/255.0, network_image[1]
             
             # if the image is valid
             if correct:
                 # put image on screen if it's properly resized
-                self.photo = ImageTk.PhotoImage(image=Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB)))
+                self.photo = ImageTk.PhotoImage(image=Image.fromarray(cv2.cvtColor(image_display, cv2.COLOR_BGR2RGB)))
+                cv2.imwrite('eye_image.jpg', image_display)
                 self.canvas.create_image(0, 0, image=self.photo, anchor=ctk.NW)
                 
                 # network and output logic should go here
+                prediction = self._model.predict_direction(cv2.imread('eye_image.jpg'))
+                print(prediction)
+                IndicatorFrame.send_output(self, self._outputs[prediction])
+
+                if os.path.exists('images/eye_image.jpg'):
+                    os.remove('images/eye_image.jpg')
+
+
+
             else:
-                print("we'll probably put a label here when the eyes aren't being seen")
-        self.after(10, self.update_camera)
+                # inform the user their eyes aren't being seen
+                print("temporary text so the if else block doesn't break")
+        self.after(10, self._update_camera)
         
     def leave_screen(self, root):
         self._active = False
