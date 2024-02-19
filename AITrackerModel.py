@@ -29,6 +29,10 @@ class AITrackerModel():
         labels_one_hot = np.eye(len(np.unique(labels_encoded)))[labels_encoded]
         self._class_names = _label_encoder.classes_
     
+    @property
+    def image_size(self):
+        return self._image_size
+    
     # make a prediction on a direction through the network
     def predict_direction(self, image):
         prediction = self._model.predict(np.array([image]), verbose=0)
