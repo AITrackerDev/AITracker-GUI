@@ -7,7 +7,7 @@ DEBUG = True
 
 class IndicatorFrame(ctk.CTkFrame):
     def __init__(self, root, settings):
-        super().__init__(root)
+        super().__init__(root, width=150, height=150)
         
         # loads in modules once reaching this screen
         if not DEBUG:
