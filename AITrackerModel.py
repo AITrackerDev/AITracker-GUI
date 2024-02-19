@@ -1,5 +1,5 @@
 '''
-Load and make predictions on the AITracker neural network model, as well as process images.
+Load and make predictions on the AITracker neural network model, as well as process images to fit the network's needs.
 '''
 import h5py
 import numpy as np
@@ -36,8 +36,7 @@ class AITrackerModel():
     # make a prediction on a direction through the network
     def predict_direction(self, image):
         prediction = self._model.predict(np.array([image]), verbose=0)
-        predicted_class_index = np.argmax(prediction)
-        predicted_class = self._class_names[predicted_class_index]
+        predicted_class = self._class_names[np.argmax(prediction)]
         
         # return string representation of prediction
         return predicted_class.decode('utf-8').strip()
