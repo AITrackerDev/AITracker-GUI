@@ -12,7 +12,7 @@ import os
 class AITrackerModel():
     def __init__(self):
         # load labels for proper predictions
-        with h5py.File(os.path.join('H5Demo', 'final_eye_data.h5'), 'r') as h5_file:
+        with h5py.File(os.path.join('AITracker', 'H5Demo', 'final_eye_data.h5'), 'r') as h5_file:
             labels_str = h5_file['labels'][:]
             
         # imaging process constants
