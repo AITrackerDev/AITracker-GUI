@@ -6,7 +6,6 @@ from LaunchHelper import IndicatorFrame
 import re
 # import usb.core
 import cv2
-from NetworkInput import network_image_crop, IMAGE_SIZE
 from PIL import Image, ImageTk
 from AITrackerModel import AITrackerModel
 
@@ -157,9 +156,6 @@ class LaunchScreen(ctk.CTkFrame):
         # network and model code
         self._model = AITrackerModel('image_classifier.model', 'H5Demo/final_eye_data.h5')
         
-        # value to know whether the screen has been exited
-        self._active = True
-        
         # leave the screen when "b" is pressed
         root.bind("b", lambda event: self.leave_screen(root))
         self.focus_set()
@@ -201,7 +197,7 @@ class LaunchScreen(ctk.CTkFrame):
         
         # camera related code and widgets
         self.cam = cv2.VideoCapture(0)
-        self.canvas = ctk.CTkCanvas(self, width=IMAGE_SIZE[0], height=IMAGE_SIZE[1])
+        self.canvas = ctk.CTkCanvas(self, width=self._model.image_size[0], height=self._model.image_size[1])
         self.canvas.place(relx=0.5, rely=0.3, anchor=ctk.CENTER)
         
         self._update_camera()
@@ -211,24 +207,22 @@ class LaunchScreen(ctk.CTkFrame):
         ret, frame = self.cam.read()
         if ret:
             # crop the image to our network's expectation
-            image_crop = network_image_crop(cv2.flip(frame, 1))
-            display_image, network_image, correct = image_crop[0], image_crop[0]/255.0, image_crop[1]
+            image_crop = self._model.process_image(cv2.flip(frame, 1))
+            display_image, correct = image_crop[0], image_crop[1]
             
             # if the image is valid
             if correct:
                 # put image on screen if it's properly resized
                 self.photo = ImageTk.PhotoImage(image=Image.fromarray(cv2.cvtColor(display_image, cv2.COLOR_BGR2RGB)))
-                cv2.imwrite('eye_image.jpg', display_image)
                 self.canvas.create_image(0, 0, image=self.photo, anchor=ctk.NW)
                 
-                # network and output logic should go here
+                # save image to make predictions on
+                cv2.imwrite('eye_image.jpg', display_image)
+                
+                # make prediction on saved image
                 prediction = self._model.predict_direction(cv2.imread('eye_image.jpg'))
-
                 if prediction != 'Center': 
                     self._outputs[prediction].send_output()
-
-                if os.path.exists('images/eye_image.jpg'):
-                    os.remove('images/eye_image.jpg')
 
             else:
                 # inform the user their eyes aren't being seen
@@ -236,7 +230,10 @@ class LaunchScreen(ctk.CTkFrame):
         self.after(10, self._update_camera)
         
     def leave_screen(self, root):
-        self._active = False
+        # remove eye image
+        if os.path.exists('eye_image.jpg'):
+            os.remove('eye_image.jpg')
+
         self.cam.release()
         root.unbind('b')
         self.show_screen_callback(MainScreen)
