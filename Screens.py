@@ -178,9 +178,15 @@ class LaunchScreen(ctk.CTkFrame):
         self._look_duration = _settings["Look Duration"]
         
         # dictionary for the outputs being able to be sent out over hardware
-        self._outputs = {'b\'North\'':self._up, 'b\'South\'':self._down, 'b\'West\'':self._left, 'b\'East\'':self._right,
-            'b\'North West\'':self._up_left, 'b\'North East\'':self._up_right, 'b\'South West\'':self._down_left,
-            'b\'South East\'':self._down_right}
+        self._outputs = {
+            'North':self._up,
+            'South':self._down,
+            'West':self._left,
+            'East':self._right,
+            'North West':self._up_left,
+            'North East':self._up_right,
+            'South West':self._down_left,
+            'South East':self._down_right}
         
         #placing squares
         self._up_left.place(relx=0, rely=0, anchor=ctk.NW)
@@ -217,13 +223,13 @@ class LaunchScreen(ctk.CTkFrame):
                 
                 # network and output logic should go here
                 prediction = self._model.predict_direction(cv2.imread('eye_image.jpg'))
+                prediction = (prediction.decode('utf-8')).strip()
+
                 print(prediction)
-                #self._outputs[prediction].send_output()
+                self._outputs[prediction].send_output(prediction)
 
                 if os.path.exists('images/eye_image.jpg'):
                     os.remove('images/eye_image.jpg')
-
-
 
             else:
                 # inform the user their eyes aren't being seen
