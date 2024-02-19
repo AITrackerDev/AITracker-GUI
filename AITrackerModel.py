@@ -29,4 +29,5 @@ class AITrackerModel():
         predicted_class_index = np.argmax(prediction)
         predicted_class = self._class_names[predicted_class_index]
         
-        return predicted_class
+        # return string representation of prediction
+        return predicted_class.decode('utf-8').strip()

@@ -223,10 +223,9 @@ class LaunchScreen(ctk.CTkFrame):
                 
                 # network and output logic should go here
                 prediction = self._model.predict_direction(cv2.imread('eye_image.jpg'))
-                prediction = (prediction.decode('utf-8')).strip()
 
-                print(prediction)
-                self._outputs[prediction].send_output(prediction)
+                if prediction != 'Center': 
+                    self._outputs[prediction].send_output()
 
                 if os.path.exists('images/eye_image.jpg'):
                     os.remove('images/eye_image.jpg')

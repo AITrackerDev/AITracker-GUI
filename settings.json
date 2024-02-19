@@ -2,50 +2,50 @@
   "Up": [
     true,
     "C4",
-    true,
-    5000
+    false,
+    500
   ],
   "Down": [
     true,
     "C2",
     false,
-    2000
+    500
   ],
   "Left": [
     true,
     "C3",
     false,
-    20
+    500
   ],
   "Right": [
     true,
     "C4",
     false,
-    2000
+    500
   ],
   "Up Left": [
     true,
     "C7",
     false,
-    2000
+    500
   ],
   "Up Right": [
     true,
     "C1",
     false,
-    10000
+    500
   ],
   "Down Left": [
     true,
     "C7",
     false,
-    2000
+    500
   ],
   "Down Right": [
     true,
     "C0",
     false,
-    2000
+    500
   ],
   "Blink": [
     true,
