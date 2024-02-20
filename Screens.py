@@ -1,15 +1,14 @@
 import os
-
 import customtkinter as ctk
 from SettingsHelper import SettingsOption, SingleEntry, load_settings, save_settings_to_json, PIN_REGEX
 from LaunchHelper import IndicatorFrame
 import re
-# import usb.core
+import usb.core
 import cv2
 from PIL import Image, ImageTk
-from AITracker.AITrackerModel import AITrackerModel
+from AITrackerModel import AITrackerModel
 
-DEBUG = True
+DEBUG = False
 
 class MainScreen(ctk.CTkFrame):
     def __init__(self, root, show_screen_callback):
@@ -37,18 +36,19 @@ class MainScreen(ctk.CTkFrame):
         # _usb_devices = usb.core.find(find_all=True)
         _device_found = False
 
-        # for device in _usb_devices:
-        #     if device.idVendor == 0x0403 and device.idProduct == 0x6014:
-        #         _device_found = True
-        #         self.show_screen_callback(LaunchScreen)
+        if not DEBUG:
+            _usb_devices = usb.core.find(find_all=True)
+            for device in _usb_devices:
+                if device.idVendor == 0x0403 and device.idProduct == 0x6014:
+                    _device_found = True
+                    self.show_screen_callback(LaunchScreen)
+        else:
+            self.show_screen_callback(LaunchScreen)
 
         # display warning if not
         if not _device_found:
             warning = ctk.CTkLabel(self, text="Please plug in FT232H breakout board to continue.", font=ctk.CTkFont(size=25))
             warning.place(relx=.5, rely=.45, anchor=ctk.CENTER)
-        
-        if DEBUG:
-            self.show_screen_callback(LaunchScreen)
 
 class AboutScreen(ctk.CTkFrame):
     def __init__(self, root, show_screen_callback):
