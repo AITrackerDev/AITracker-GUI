@@ -18,9 +18,6 @@ class AITrackerGUI(ctk.CTk):
         ctk.set_appearance_mode("dark")
         ctk.set_default_color_theme("blue")
         self.geometry("1080x720")
-        self.attributes('-topmost', 1)
-        self.update()
-        self.attributes('-topmost', 0)
         self.wm_attributes("-fullscreen", True)
         self.show_screen(MainScreen)
         
