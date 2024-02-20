@@ -3,7 +3,7 @@ All of the necessary functions for the launch screen should be located in here.
 '''
 import customtkinter as ctk
 
-DEBUG = False
+DEBUG = True
 
 class IndicatorFrame(ctk.CTkFrame):
     def __init__(self, root, settings):

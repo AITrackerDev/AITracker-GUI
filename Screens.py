@@ -3,12 +3,12 @@ import customtkinter as ctk
 from SettingsHelper import SettingsOption, SingleEntry, load_settings, save_settings_to_json, PIN_REGEX
 from LaunchHelper import IndicatorFrame
 import re
-import usb.core
+# import usb.core
 import cv2
 from PIL import Image, ImageTk
 from AITrackerModel import AITrackerModel
 
-DEBUG = False
+DEBUG = True
 
 class MainScreen(ctk.CTkFrame):
     def __init__(self, root, show_screen_callback):
