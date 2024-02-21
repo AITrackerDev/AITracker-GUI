@@ -5,12 +5,11 @@ import customtkinter as ctk
 import json
 import re
 
+PIN_REGEX = "^C[0-7]$|^D[4-7]$"
+
 '''
 A class that holds 2 entry widgets, switch, label, and checkbox for a specific setting.
 '''
-
-PIN_REGEX = "^C[0-7]$|^D[4-7]$"
-
 class SettingsOption(ctk.CTkFrame):
     def __init__(self, root, name):
         super().__init__(root)

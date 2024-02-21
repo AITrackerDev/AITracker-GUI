@@ -1,25 +1,25 @@
 {
   "Up": [
-    false,
-    "",
+    true,
+    "C0",
     false,
     500
   ],
   "Down": [
-    false,
-    "",
+    true,
+    "C2",
     false,
     500
   ],
   "Left": [
-    false,
-    "",
+    true,
+    "C5",
     false,
     500
   ],
   "Right": [
-    false,
-    "",
+    true,
+    "C3",
     false,
     500
   ],
@@ -36,8 +36,8 @@
     500
   ],
   "Down Left": [
-    false,
-    "",
+    true,
+    "C7",
     false,
     500
   ],
