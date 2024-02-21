@@ -1,7 +1,6 @@
 '''
 This file contains all of the necessary code to start the application and run through all of the necessary startup requirements.
 '''
-
 import os
 import platform
 import ctypes
