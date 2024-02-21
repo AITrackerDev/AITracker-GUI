@@ -1,14 +1,12 @@
 import os
 import customtkinter as ctk
 from SettingsHelper import SettingsOption, SingleEntry, load_settings, save_settings_to_json, PIN_REGEX
-from LaunchHelper import IndicatorFrame
+from LaunchHelper import IndicatorFrame, DEBUG
 import re
-# import usb.core
+import usb.core
 import cv2
 from PIL import Image, ImageTk
 from AITrackerModel import AITrackerModel
-
-DEBUG = True
 
 class MainScreen(ctk.CTkFrame):
     def __init__(self, root, show_screen_callback):
@@ -16,7 +14,7 @@ class MainScreen(ctk.CTkFrame):
         self.show_screen_callback = show_screen_callback
         
         #widget creation
-        _title_label = ctk.CTkLabel(self, text="Welcome to aiTracker!", font=ctk.CTkFont(size=40))
+        _title_label = ctk.CTkLabel(self, text="Welcome to AITracker!", font=ctk.CTkFont(size=40))
         _subtitle_label = ctk.CTkLabel(self, text="Click below to get started", font=ctk.CTkFont(size=25))
         _launch_button = ctk.CTkButton(self, text="Launch", corner_radius=10, command=lambda: self._load_launch_screen())
         _about_button = ctk.CTkButton(self, text="Help", corner_radius=10, command=lambda: self.show_screen_callback(AboutScreen))
@@ -33,7 +31,6 @@ class MainScreen(ctk.CTkFrame):
         
     # checks if the FT232H board is plugged in, and won't continue unless it is
     def _load_launch_screen(self):
-        # _usb_devices = usb.core.find(find_all=True)
         _device_found = False
 
         if not DEBUG:
@@ -42,13 +39,12 @@ class MainScreen(ctk.CTkFrame):
                 if device.idVendor == 0x0403 and device.idProduct == 0x6014:
                     _device_found = True
                     self.show_screen_callback(LaunchScreen)
+            # display warning if the board isn't found
+            if not _device_found:
+                warning = ctk.CTkLabel(self, text="Please plug in FT232H breakout board to continue.", font=ctk.CTkFont(size=25))
+                warning.place(relx=.5, rely=.45, anchor=ctk.CENTER)
         else:
             self.show_screen_callback(LaunchScreen)
-
-        # display warning if not
-        if not _device_found:
-            warning = ctk.CTkLabel(self, text="Please plug in FT232H breakout board to continue.", font=ctk.CTkFont(size=25))
-            warning.place(relx=.5, rely=.45, anchor=ctk.CENTER)
 
 class AboutScreen(ctk.CTkFrame):
     def __init__(self, root, show_screen_callback):
