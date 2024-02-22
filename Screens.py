@@ -1,11 +1,12 @@
 import os
 import customtkinter as ctk
-from SettingsHelper import SettingsOption, SingleEntry, load_settings, save_settings_to_json, PIN_REGEX
-from LaunchHelper import IndicatorFrame, DEBUG
 import re
 import usb.core
 import cv2
+import time
 from PIL import Image, ImageTk
+from SettingsHelper import SettingsOption, SingleEntry, load_settings, save_settings_to_json, PIN_REGEX
+from LaunchHelper import IndicatorFrame, DEBUG
 from AITrackerModel import AITrackerModel
 
 class MainScreen(ctk.CTkFrame):
@@ -167,7 +168,7 @@ class LaunchScreen(ctk.CTkFrame):
         self._down_left = IndicatorFrame(self, _settings["Down Left"])
         self._down_right = IndicatorFrame(self, _settings["Down Right"])
         self._blink = IndicatorFrame(self, _settings["Blink"])
-        self._look_duration = _settings["Look Duration"]
+        self._look_duration = _settings["Look Duration"] / 1000
         
         # dictionary for the outputs being able to be sent out over hardware
         self._outputs = {
@@ -191,11 +192,14 @@ class LaunchScreen(ctk.CTkFrame):
         self._down.place(relx=0.5, rely=1, anchor=ctk.S)
         self._down_right.place(relx=1, rely=1, anchor=ctk.SE)
         
+        # look duration variables
+        self._current_direction = 'Center'
+        self._start_time = time.time()
+        
         # camera related code and widgets
         self._cam = cv2.VideoCapture(0)
         self._canvas = ctk.CTkCanvas(self, width=self._model.image_size[0], height=self._model.image_size[1])
         self._canvas.place(relx=0.5, rely=0.3, anchor=ctk.CENTER)
-        
         self._update_camera()
     
     # update camera feed and display cropped image   
@@ -217,9 +221,21 @@ class LaunchScreen(ctk.CTkFrame):
                 
                 # make prediction on saved image
                 prediction = self._model.predict_direction(cv2.imread('eye_image.jpg'))
-                if prediction != 'Center': 
-                    self._outputs[prediction].send_output()
-
+                
+                # look duration code
+                if self._current_direction != prediction:
+                    # reset direction and time if the prediction and current direction aren't the same
+                    self._current_direction = prediction
+                    self._start_time = time.time()
+                else:
+                    # check if the start time + look duration is bigger then current time
+                    if self._start_time + self._look_duration <= time.time():
+                        # send the output since it passed both blocks
+                        if prediction != 'Center': 
+                            self._outputs[prediction].send_output()
+                        # reset direction and time
+                        self._current_direction = 'Center'
+                        self._start_time = time.time()
             else:
                 # inform the user their eyes aren't being seen
                 print("temporary text so the if else block doesn't break")
