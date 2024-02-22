@@ -5,8 +5,8 @@ import usb.core
 import cv2
 import time
 from PIL import Image, ImageTk
-from SettingsHelper import SettingsOption, SingleEntry, load_settings, save_settings_to_json, PIN_REGEX
-from LaunchHelper import IndicatorFrame, DEBUG
+from SettingsWidgets import SettingsOption, SingleEntry, load_settings, save_settings_to_json, PIN_REGEX
+from IndicatorFrame import IndicatorFrame, DEBUG
 from AITrackerModel import AITrackerModel
 
 class MainScreen(ctk.CTkFrame):
