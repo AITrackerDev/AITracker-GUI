@@ -1,5 +1,5 @@
 '''
-All of the necessary functions for the launch screen should be located in here.
+Indicator frame widget that sends outputs through the FT232H board.
 '''
 import customtkinter as ctk
 
@@ -42,11 +42,13 @@ class IndicatorFrame(ctk.CTkFrame):
                 if not DEBUG: self._pin.value = True
                 self.configure(fg_color="green")
                 self.after(self._out_duration, lambda: self._reset_pin())
-            
+                
+    # reset the pin to false and change the color to white     
     def _reset_pin(self):
         self.configure(fg_color="white")
         if not DEBUG: self._pin.value = False
     
+    # loads the modules dynamically to prevent the app from freaking out
     def _load_modules(self):
         global board, digitalio
         import board
