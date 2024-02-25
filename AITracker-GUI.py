@@ -2,6 +2,7 @@
 This file contains all of the necessary code to start the application and run through all of the necessary startup requirements.
 '''
 import os
+import subprocess as sp
 import platform
 import ctypes
 import customtkinter as ctk
@@ -22,7 +23,7 @@ class AITrackerGUI(ctk.CTk):
         self.attributes('-topmost', 0)
         self.wm_attributes("-fullscreen", True)
         self.show_screen(MainScreen)
-        
+
     def show_screen(self, screen_class):
         # destroy current screen if exists
         if self.current_screen:
@@ -35,12 +36,14 @@ class AITrackerGUI(ctk.CTk):
 if __name__ == "__main__":
     # adafruit environment variable
     os.environ["BLINKA_FT232H"] = "1"
-    
+
     # platform specific fixes
     if platform.system() == "Windows":
         ctypes.windll.shcore.SetProcessDpiAwareness(2)
     elif platform.system() == "Darwin":
-        os.environ["DYLD_LIBRARY_PATH"] = "/usr/local/Cellar/libusb/1.0.26/lib"
+        # find the version of libusb that's installed and set it as an environment variable
+        version_path = sp.run('readlink -f $(brew --prefix libusb)', shell=True, capture_output=True).stdout.strip().decode("utf-8")
+        os.environ["DYLD_LIBRARY_PATH"] = os.path.join(version_path, 'lib')
 
     app = AITrackerGUI()
     app.mainloop()
