@@ -120,7 +120,7 @@ class SettingsScreen(ctk.CTkFrame):
         settings_map = load_settings("settings.json")
         for setting in self._settings:
             setting.set_settings(settings_map[setting.name])
-        self._look_duration.set_value(settings_map["Look Duration"])
+        self._look_duration.set_value(settings_map["Input Duration"])
 
     # saves all the settings and returns back to the main screen
     def _save_settings(self):

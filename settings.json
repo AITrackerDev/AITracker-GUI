@@ -49,9 +49,9 @@
   ],
   "Blink": [
     false,
-    "",
+    "D4",
     false,
-    2000
+    500
   ],
   "Input Duration": 0
 }
