@@ -198,7 +198,6 @@ class LaunchScreen(ctk.CTkFrame):
         self._look_time = time.time()
         
         # blink detection variables
-        self._eye_distance = (1000, 1000)
         self._blink_time = time.time()
 
         # camera related code and widgets
@@ -237,41 +236,39 @@ class LaunchScreen(ctk.CTkFrame):
 
     # check if the user has been looking in a certain direction for a certain amount of time
     def _look_duration(self, prediction: str):
+        # if the directions are not the same, the user has looked somewhere else
         if self._current_direction != prediction:
-            # reset direction and time if the prediction and current direction aren't the same
             self._current_direction = prediction
             self._look_time = time.time()
+
+        # the direction is consistent, meaning that the user is looking in only 1 direction
         else:
-            # check if the start time + look duration is bigger then current time
+            # check if the start time + input duration is bigger then current time
             if self._look_time + self._input_duration <= time.time():
                 # send the output since it passed both blocks
                 if prediction != 'Center':
                     self._outputs[prediction].send_output()
-                # reset direction and time
                 self._current_direction = 'Center'
                 self._blink_time = time.time()
 
     # check if the user has blinked for a certain amount of time
     def _blink_detection(self, frame):
         # calculate distance between the top and bottom of each eye
-        self._eye_distance = self._model.eye_distance(frame)
+        left_eye_dist, right_eye_dist = self._model.eye_distance(frame)
         
-        # if the eyes are open past a certain point, the user isn't trying to blink
-        if self._eye_distance[0] < 5 and self._eye_distance[1] < 5:
-            # reset direction and time if the prediction and current direction aren't the same
-            self._eye_distance = (1000, 1000) # should probably be set to something else but this is fine
-            self._blink_time = time.time()
-        
-        # the distance between the eyes is small enough to represent a blink
-        else:
-            # check if the start time + input duration is bigger then current time
-            if self._blink_time + self._input_duration <= time.time():
-                # send the output since it passed both blocks
-                self._outputs['Blink'].send_output()
-                
-                # reset distance and time
-                self._eye_distance = (1000, 1000)
+        # in case the eyes can't be seen, skip
+        if left_eye_dist == -1 and right_eye_dist == -1:
+            # if the eyes are open past a certain point, the user isn't trying to blink
+            if left_eye_dist < 5 and right_eye_dist < 5:
                 self._blink_time = time.time()
+            
+            # the distance between the eyes is small enough to represent a blink
+            else:
+                # check if the start time + input duration is bigger then current time
+                if self._blink_time + self._input_duration <= time.time():
+                    # send the output since it passed both blocks
+                    self._outputs['Blink'].send_output()
+                    self._blink_time = time.time()
 
     # performs certain actions to "clean up" the screen and leave without issues
     def leave_screen(self, root):

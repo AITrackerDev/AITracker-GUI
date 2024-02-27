@@ -121,4 +121,4 @@ class AITrackerModel():
                 #right width, bottom height
                 landmarks.part(45).x + pad, landmarks.part(47).y + pad
             )
-        print("eye distance calculation goes here")
+        return (-1, -1)
