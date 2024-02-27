@@ -97,7 +97,7 @@ class SettingsScreen(ctk.CTkFrame):
         self._down_left = SettingsOption(_settings_frame, name="Down Left")
         self._down_right = SettingsOption(_settings_frame, name="Down Right")
         self._blink = SettingsOption(_settings_frame, name="Blink")
-        self._look_duration = SingleEntry(_settings_frame, name="Look Duration")
+        self._look_duration = SingleEntry(_settings_frame, name="Input Duration")
 
         self._settings = [
             self._up, self._down, self._left, self._right, self._up_left,
@@ -168,7 +168,7 @@ class LaunchScreen(ctk.CTkFrame):
         self._down_left = IndicatorFrame(self, _settings["Down Left"])
         self._down_right = IndicatorFrame(self, _settings["Down Right"])
         self._blink = IndicatorFrame(self, _settings["Blink"])
-        self._look_duration = _settings["Look Duration"] / 1000
+        self._input_duration = _settings["Input Duration"] / 1000
 
         # dictionary for the outputs being able to be sent out over hardware
         self._outputs = {
@@ -179,7 +179,8 @@ class LaunchScreen(ctk.CTkFrame):
             'North West':self._up_left,
             'North East':self._up_right,
             'South West':self._down_left,
-            'South East':self._down_right}
+            'South East':self._down_right,
+            'Blink':self._blink}
 
         #placing squares
         self._up_left.place(relx=0, rely=0, anchor=ctk.NW)
@@ -194,7 +195,11 @@ class LaunchScreen(ctk.CTkFrame):
 
         # look duration variables
         self._current_direction = 'Center'
-        self._start_time = time.time()
+        self._look_time = time.time()
+        
+        # blink detection variables
+        self._eye_distance = (1000, 1000)
+        self._blink_time = time.time()
 
         # camera related code and widgets
         self._cam = cv2.VideoCapture(0)
@@ -222,7 +227,7 @@ class LaunchScreen(ctk.CTkFrame):
                 # make prediction on saved image
                 prediction = self._model.predict_direction(cv2.imread('eye_image.jpg'))
 
-                self._look_duration_check(prediction)
+                self._look_duration(prediction)
 
                 self._blink_detection(frame)
             else:
@@ -230,27 +235,47 @@ class LaunchScreen(ctk.CTkFrame):
                 print("temporary text so the if else block doesn't break")
         self.after(10, self._update_camera)
 
-    def _look_duration_check(self, prediction: str):
-        # look duration code
+    # check if the user has been looking in a certain direction for a certain amount of time
+    def _look_duration(self, prediction: str):
         if self._current_direction != prediction:
             # reset direction and time if the prediction and current direction aren't the same
             self._current_direction = prediction
-            self._start_time = time.time()
+            self._look_time = time.time()
         else:
             # check if the start time + look duration is bigger then current time
-            if self._start_time + self._look_duration <= time.time():
+            if self._look_time + self._input_duration <= time.time():
                 # send the output since it passed both blocks
                 if prediction != 'Center':
                     self._outputs[prediction].send_output()
                 # reset direction and time
                 self._current_direction = 'Center'
-                self._start_time = time.time()
+                self._blink_time = time.time()
 
+    # check if the user has blinked for a certain amount of time
     def _blink_detection(self, frame):
-        print("blink detection goes here probably...")
+        # calculate distance between the top and bottom of each eye
+        self._eye_distance = self._model.eye_distance(frame)
+        
+        # if the eyes are open past a certain point, the user isn't trying to blink
+        if self._eye_distance[0] < 5 and self._eye_distance[1] < 5:
+            # reset direction and time if the prediction and current direction aren't the same
+            self._eye_distance = (1000, 1000) # should probably be set to something else but this is fine
+            self._blink_time = time.time()
+        
+        # the distance between the eyes is small enough to represent a blink
+        else:
+            # check if the start time + input duration is bigger then current time
+            if self._blink_time + self._input_duration <= time.time():
+                # send the output since it passed both blocks
+                self._outputs['Blink'].send_output()
+                
+                # reset distance and time
+                self._eye_distance = (1000, 1000)
+                self._blink_time = time.time()
 
+    # performs certain actions to "clean up" the screen and leave without issues
     def leave_screen(self, root):
-        # remove eye image
+        # remove eye image (temporary fix)
         if os.path.exists('eye_image.jpg'):
             os.remove('eye_image.jpg')
 
