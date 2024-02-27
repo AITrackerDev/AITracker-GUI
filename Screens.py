@@ -229,7 +229,7 @@ class LaunchScreen(ctk.CTkFrame):
 
                 self._look_duration(prediction)
 
-                self._blink_detection(frame)
+                # self._blink_detection(frame)
             else:
                 # inform the user their eyes aren't being seen
                 print("temporary text so the if else block doesn't break")
