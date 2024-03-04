@@ -8,7 +8,7 @@ WIP (too lazy rn)
 ## Requirements
 This application is built in Python 3.11, and should be run using this version.
 
-### Mac
+### MacOS
 AITracker-GUI relies upon the library libusb installed via homebrew. If it isn't installed, use this command to install it so the application can find it in the proper location.
 
 `brew install libusb`
