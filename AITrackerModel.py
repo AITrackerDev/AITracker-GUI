@@ -8,7 +8,7 @@ from sklearn.preprocessing import LabelEncoder
 import cv2
 import dlib
 import os
-import math # math.dist to calculate distance between 2 points
+import math
 
 class AITrackerModel():
     def __init__(self):
@@ -109,16 +109,21 @@ class AITrackerModel():
             pad = 5
             
             left_eye = (
-                #left width, top height
-                landmarks.part(36).x - pad, landmarks.part(37).y - pad,
-                #right width, bottom height
-                landmarks.part(39).x + pad, landmarks.part(41).y + pad
+                (landmarks.part(37).x, landmarks.part(37).y),
+                (landmarks.part(38).x, landmarks.part(38).y),
+                (landmarks.part(41).x, landmarks.part(41).y),
+                (landmarks.part(40).x, landmarks.part(40).y)
             )
             
             right_eye = (
-                #left width, top height
-                landmarks.part(42).x - pad, landmarks.part(43).y - pad,
-                #right width, bottom height
-                landmarks.part(45).x + pad, landmarks.part(47).y + pad
+                (landmarks.part(43).x, landmarks.part(43).y),
+                (landmarks.part(44).x, landmarks.part(44).y),
+                (landmarks.part(47).x, landmarks.part(47).y),
+                (landmarks.part(46).x, landmarks.part(46).y)
             )
+            
+            left_max_dist = max(math.dist(left_eye[0], left_eye[2]), math.dist(left_eye[1], left_eye[3]))
+            right_max_dist = max(math.dist(right_eye[0], right_eye[2]), math.dist(right_eye[1], right_eye[3]))
+            
+            return (math.floor(left_max_dist), math.floor(right_max_dist))
         return (-1, -1)
