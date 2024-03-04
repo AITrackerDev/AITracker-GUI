@@ -228,7 +228,7 @@ class LaunchScreen(ctk.CTkFrame):
 
                 self._look_duration(prediction)
 
-                # self._blink_detection(frame)
+                self._blink_detection(frame)
             else:
                 # inform the user their eyes aren't being seen
                 print("temporary text so the if else block doesn't break")
@@ -257,9 +257,9 @@ class LaunchScreen(ctk.CTkFrame):
         left_eye_dist, right_eye_dist = self._model.eye_distance(frame)
         
         # in case the eyes can't be seen, skip
-        if left_eye_dist == -1 and right_eye_dist == -1:
+        if left_eye_dist != -1 and right_eye_dist != -1:
             # if the eyes are open past a certain point, the user isn't trying to blink
-            if left_eye_dist < 5 and right_eye_dist < 5:
+            if left_eye_dist > 18 and right_eye_dist > 18:
                 self._blink_time = time.time()
             
             # the distance between the eyes is small enough to represent a blink
