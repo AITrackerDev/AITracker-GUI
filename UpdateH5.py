@@ -64,26 +64,26 @@ from matplotlib import pyplot as plt
 # update_labels(input_h5_path, output_h5_path, substring_to_label_mapping)
 
 # # Read and display first few images and labels in an H5 file
-# def readH5(path):
-#     # Open the HDF5 file for reading
-#     h5f = h5py.File(path, 'r')
-#
-#     # Read the 'images' and 'labels' datasets
-#     images = h5f['images'][:]
-#     labels = h5f['labels'][:]
-#
-#     # Close the HDF5 file
-#     h5f.close()
-#
-#     # Display the images
-#     for i in range(len(images)):
-#         label = labels[i].decode()  # Decode the label from bytes to string
-#         plt.figure()
-#         plt.imshow(images[i])
-#         plt.title(f"Label: {label}")
-#         plt.show()
-#
-# readH5('H5Demo/final_eye_data.h5')
+def readH5(path):
+    # Open the HDF5 file for reading
+    h5f = h5py.File(path, 'r')
+
+    # Read the 'images' and 'labels' datasets
+    images = h5f['images'][:]
+    labels = h5f['labels'][:]
+
+    # Close the HDF5 file
+    h5f.close()
+
+    # Display the images
+    for i in range(len(images)):
+        label = labels[i].decode()  # Decode the label from bytes to string
+        plt.figure()
+        plt.imshow(images[i])
+        plt.title(f"Label: {label}")
+        plt.show()
+
+readH5('image_collection2024-03-02_15-01-01.h5')
 
 # # Prints all labels in an H5 File
 # def print_labels(h5_file_path):
