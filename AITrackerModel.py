@@ -8,6 +8,7 @@ from sklearn.preprocessing import LabelEncoder
 import cv2
 import dlib
 import os
+import math
 
 class AITrackerModel():
     def __init__(self):
@@ -95,3 +96,34 @@ class AITrackerModel():
 
         # return the composite image
         return composite_image
+    
+    # calculate the distance between the top and bottom of each eye and return it as a tuple
+    def eye_distance(self, image):
+        # grayscale image for better detection
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        
+        # if a face is detected
+        faces = self._eyes_detector(gray)
+        if len(faces) > 0:
+            landmarks = self._predictor(gray, faces[0])
+            pad = 5
+            
+            left_eye = (
+                (landmarks.part(37).x, landmarks.part(37).y),
+                (landmarks.part(38).x, landmarks.part(38).y),
+                (landmarks.part(41).x, landmarks.part(41).y),
+                (landmarks.part(40).x, landmarks.part(40).y)
+            )
+            
+            right_eye = (
+                (landmarks.part(43).x, landmarks.part(43).y),
+                (landmarks.part(44).x, landmarks.part(44).y),
+                (landmarks.part(47).x, landmarks.part(47).y),
+                (landmarks.part(46).x, landmarks.part(46).y)
+            )
+            
+            left_max_dist = max(math.dist(left_eye[0], left_eye[2]), math.dist(left_eye[1], left_eye[3]))
+            right_max_dist = max(math.dist(right_eye[0], right_eye[2]), math.dist(right_eye[1], right_eye[3]))
+            
+            return (math.floor(left_max_dist), math.floor(right_max_dist))
+        return (-1, -1)

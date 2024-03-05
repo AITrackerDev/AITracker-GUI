@@ -48,10 +48,10 @@
     500
   ],
   "Blink": [
-    false,
-    "",
+    true,
+    "D4",
     false,
     2000
   ],
-  "Look Duration": 2000
+  "Input Duration": 500
 }
