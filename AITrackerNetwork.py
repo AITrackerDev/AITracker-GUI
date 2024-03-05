@@ -22,8 +22,9 @@ labels_encoded = label_encoder.fit_transform(labels_str)
 labels_one_hot = np.eye(len(np.unique(labels_encoded)))[labels_encoded]
 
 # Split the data into training and testing sets
-training_images, testing_images, training_labels, testing_labels = train_test_split(images, labels_one_hot, test_size=0.2, random_state=42)
-training_images, testing_images = training_images / 255, testing_images / 255  # scales values so they are between 0-1
+training_images, testing_images, training_labels, testing_labels = train_test_split(
+    images, labels_one_hot, test_size=0.2, random_state=42)
+training_images, testing_images = training_images / 255, testing_images / 255  # Scales values to be between 0-1
 
 # The labels that the neural network can identify given an image
 class_names = label_encoder.classes_
@@ -31,25 +32,79 @@ class_names = label_encoder.classes_
 # COMMENT UP TO LINE 52 AFTER MODEL IS TRAINED
 # Model layers
 model = models.Sequential()
-model.add(layers.Conv2D(32, (3,3), activation='relu', input_shape=(80,190, 3))) # 80,190 pixels, 3 colors
+
+# Convolutional layers
+model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(80, 190, 3)))  # 80x190 pixels, 3 colors
 model.add(layers.MaxPooling2D(2, 2))
 model.add(layers.Conv2D(64, (3, 3), activation='relu'))
 model.add(layers.MaxPooling2D(2, 2))
 model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+
+# Flatten layer
 model.add(layers.Flatten())
+
+# Dense layers
 model.add(layers.Dense(64, activation='relu'))
-model.add(layers.Dense(len(class_names), activation='softmax')) # number of classifications
+model.add(layers.Dense(len(class_names), activation='softmax'))  # Number of classifications
 
 # Define loss function and metric
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-model.fit(training_images, training_labels, epochs=10, validation_data=(testing_images, testing_labels)) # number of epochs
 
-# Retrieve final loss and accuracy values for trained neural network
+# Training the model
+model.fit(training_images, training_labels, epochs=14, validation_data=(testing_images, testing_labels))
+
+# Retrieve final loss and accuracy values for the trained neural network
 loss, accuracy = model.evaluate(testing_images, testing_labels)
 print(f"Loss: {loss}  Accuracy: {accuracy}")
 
-# save model
-model.save('image_classifier.model')
+# Save the trained model
+model.save('image_classifier2.model')
+
+# NEW MODEL
+# from tensorflow.keras.models import Sequential
+# from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, BatchNormalization, Dropout
+#
+# model = Sequential()
+#
+# # Input layer
+# model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(80, 190, 3)))
+# model.add(BatchNormalization())
+# model.add(MaxPooling2D(2, 2))
+#
+# # Second convolutional layer
+# model.add(Conv2D(64, (3, 3), activation='relu'))
+# model.add(BatchNormalization())
+# model.add(MaxPooling2D(2, 2))
+#
+# # Third convolutional layer
+# model.add(Conv2D(64, (3, 3), activation='relu'))
+# model.add(BatchNormalization())
+# model.add(MaxPooling2D(2, 2))
+#
+# # Flatten layer
+# model.add(Flatten())
+#
+# # Dense layers
+# model.add(Dense(128, activation='relu'))
+# model.add(Dropout(0.5))  # Add dropout for regularization
+# model.add(Dense(len(class_names), activation='softmax'))
+#
+# # Compile the model
+# model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+#
+# # Display the summary of the model
+# model.summary()
+#
+# # Training the model
+# model.fit(training_images, training_labels, epochs=20, validation_data=(testing_images, testing_labels))
+#
+# # Evaluate and save the model
+# loss, accuracy = model.evaluate(testing_images, testing_labels)
+# print(f"Loss: {loss}  Accuracy: {accuracy}")
+#
+# # Save the model
+# model.save('image_classifier2.model')
+
 
 # UNCOMMENT BELOW CODE AFTER MODEL IS TRAINED
 # # Loads saved model

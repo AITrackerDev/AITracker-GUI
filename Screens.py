@@ -1,7 +1,7 @@
 import os
 import customtkinter as ctk
 import re
-import usb.core
+#import usb.core
 import cv2
 import time
 from PIL import Image, ImageTk
