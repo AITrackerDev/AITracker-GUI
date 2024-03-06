@@ -12,7 +12,7 @@ class SettingsScreen(ctk.CTkFrame):
     
     def __init__(self, root, screen_changer):
         super().__init__(root, width=root.winfo_width(), height=root.winfo_height())
-        self.screen_changer = screen_changer
+        self._screen_changer = screen_changer
 
         # settings label and back button
         _title = ctk.CTkLabel(self, text='Settings', font=ctk.CTkFont(size=40))
@@ -80,7 +80,7 @@ class SettingsScreen(ctk.CTkFrame):
         
         # save settings
         if not invalid_pin:
-            self.screen_changer('MainScreen')
+            self._screen_changer('MainScreen')
             try:
                 with open('settings.json', 'w') as json_file:
                     json.dump(new_settings, json_file, indent=2)

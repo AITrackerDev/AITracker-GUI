@@ -14,7 +14,7 @@ class LaunchScreen(ctk.CTkFrame):
     
     def __init__(self, root, screen_changer):
         super().__init__(root, width=root.winfo_width(), height=root.winfo_height())
-        self.screen_changer = screen_changer
+        self._screen_changer = screen_changer
 
         # network and model code
         self._model = AITrackerModel()
@@ -166,4 +166,4 @@ class LaunchScreen(ctk.CTkFrame):
 
         self._cam.release()
         root.unbind('b')
-        self.screen_changer('MainScreen')
+        self._screen_changer('MainScreen')
