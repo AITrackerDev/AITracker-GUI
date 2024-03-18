@@ -4,6 +4,7 @@ import json
 from widgets.DirectionSetting import DirectionSetting
 from widgets.NumberSetting import NumberSetting
 from widgets.IndicatorSquare import PIN_REGEX
+from widgets.BlinkSetting import BlinkSetting
 
 class SettingsScreen(ctk.CTkFrame):
     '''
@@ -33,8 +34,8 @@ class SettingsScreen(ctk.CTkFrame):
         self._up_right = DirectionSetting(_settings_frame, name='Up Right')
         self._down_left = DirectionSetting(_settings_frame, name='Down Left')
         self._down_right = DirectionSetting(_settings_frame, name='Down Right')
-        self._blink = DirectionSetting(_settings_frame, name='Blink')
-        self._look_duration = NumberSetting(_settings_frame, name='Input Duration')
+        self._blink = BlinkSetting(_settings_frame, name='Blink')
+        self._look_duration = NumberSetting(_settings_frame, name='Look Duration')
 
         self._settings = [
             self._up, self._down, self._left, self._right, self._up_left,
@@ -57,7 +58,7 @@ class SettingsScreen(ctk.CTkFrame):
         settings_map = load_settings_from_json('settings.json')
         for setting in self._settings:
             setting.set_settings(settings_map[setting.name])
-        self._look_duration.set_value(settings_map['Input Duration'])
+        self._look_duration.set_value(settings_map['Look Duration'])
     
     def _save_settings(self):
         '''

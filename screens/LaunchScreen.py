@@ -34,7 +34,9 @@ class LaunchScreen(ctk.CTkFrame):
         self._down_left = IndicatorSquare(self, _settings['Down Left'])
         self._down_right = IndicatorSquare(self, _settings['Down Right'])
         self._blink = IndicatorSquare(self, _settings['Blink'])
-        self._input_duration = _settings['Input Duration'] / 1000
+        self._input_duration = _settings['Look Duration'] / 1000
+        self._blink_duration = _settings['Blink'][4] / 1000
+        self._blink_sensitivity = _settings['Blink'][5]
 
         # dictionary for the outputs being able to be sent out over hardware
         self._outputs = {
@@ -144,13 +146,13 @@ class LaunchScreen(ctk.CTkFrame):
         # in case the eyes can't be seen, skip
         if left_EAR != -1 and right_EAR != -1:
             # if the eyes are open past a certain point, the user isn't trying to blink
-            if left_EAR > 0.45 and right_EAR > 0.45:
+            if round(left_EAR, 2) > self._blink_sensitivity and round(right_EAR, 2) > self._blink_sensitivity:
                 self._blink_time = time.time()
             
             # the distance between the eyes is small enough to represent a blink
             else:
                 # check if the start time + input duration is bigger then current time
-                if self._blink_time + self._input_duration <= time.time():
+                if self._blink_time + self._blink_duration <= time.time():
                     # send the output since it passed both blocks
                     self._outputs['Blink'].send_output()
                     self._blink_time = time.time()
