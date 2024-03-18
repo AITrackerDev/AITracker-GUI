@@ -139,12 +139,12 @@ class LaunchScreen(ctk.CTkFrame):
         '''
         
         # calculate distance between the top and bottom of each eye
-        left_eye_dist, right_eye_dist = self._model.eye_distance(frame)
+        left_EAR, right_EAR = self._model.eye_distance(frame)
         
         # in case the eyes can't be seen, skip
-        if left_eye_dist != -1 and right_eye_dist != -1:
+        if left_EAR != -1 and right_EAR != -1:
             # if the eyes are open past a certain point, the user isn't trying to blink
-            if left_eye_dist > 18 and right_eye_dist > 18:
+            if left_EAR > 0.45 and right_EAR > 0.45:
                 self._blink_time = time.time()
             
             # the distance between the eyes is small enough to represent a blink
