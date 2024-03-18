@@ -1,15 +1,17 @@
 import customtkinter as ctk
 import usb.core
-from widgets.IndicatorSquare import DEBUG
 
 class MainScreen(ctk.CTkFrame):
     '''
     The main screen used to access the other screens.
     '''
     
-    def __init__(self, root, screen_changer):
+    def __init__(self, root, screen_changer, settings):
         super().__init__(root, width=root.winfo_width(), height=root.winfo_height())
         self._screen_changer = screen_changer
+        
+        # usb outputs don't get sent
+        self._demo = settings['Demo Mode']
         
         #widget creation
         _title_label = ctk.CTkLabel(self, text='Welcome to AITracker!', font=ctk.CTkFont(size=40))
@@ -32,10 +34,11 @@ class MainScreen(ctk.CTkFrame):
         Loads the launch screen of the application and checks if the breakout board is plugged in.
         '''
 
-        if not DEBUG:
+        if not self._demo:
             _usb_devices = usb.core.find(find_all=True)
             _device_found = False
             for device in _usb_devices:
+                # FT323H specific values
                 if device.idVendor == 0x0403 and device.idProduct == 0x6014:
                     _device_found = True
                     self._screen_changer('LaunchScreen')

@@ -12,7 +12,7 @@ class LaunchScreen(ctk.CTkFrame):
     The screen that the user interacts with using their eyes.
     '''
     
-    def __init__(self, root, screen_changer):
+    def __init__(self, root, screen_changer, settings):
         super().__init__(root, width=root.winfo_width(), height=root.winfo_height())
         self._screen_changer = screen_changer
 
@@ -22,21 +22,25 @@ class LaunchScreen(ctk.CTkFrame):
         # leave the screen when 'b' is pressed
         root.bind('b', lambda event: self.leave_screen(root))
         self.focus_set()
+        
+        # demo mode
+        demo = settings['Demo Mode']
 
         # indicator squares
-        _settings = load_settings_from_json('settings.json')
-        self._up = IndicatorSquare(self, _settings['Up'])
-        self._down = IndicatorSquare(self, _settings['Down'])
-        self._left = IndicatorSquare(self, _settings['Left'])
-        self._right = IndicatorSquare(self, _settings['Right'])
-        self._up_left = IndicatorSquare(self, _settings['Up Left'])
-        self._up_right = IndicatorSquare(self, _settings['Up Right'])
-        self._down_left = IndicatorSquare(self, _settings['Down Left'])
-        self._down_right = IndicatorSquare(self, _settings['Down Right'])
-        self._blink = IndicatorSquare(self, _settings['Blink'])
-        self._input_duration = _settings['Look Duration'] / 1000
-        self._blink_duration = _settings['Blink'][4] / 1000
-        self._blink_sensitivity = _settings['Blink'][5]
+        self._up = IndicatorSquare(self, settings['Up'], demo)
+        self._down = IndicatorSquare(self, settings['Down'], demo)
+        self._left = IndicatorSquare(self, settings['Left'], demo)
+        self._right = IndicatorSquare(self, settings['Right'], demo)
+        self._up_left = IndicatorSquare(self, settings['Up Left'], demo)
+        self._up_right = IndicatorSquare(self, settings['Up Right'], demo)
+        self._down_left = IndicatorSquare(self, settings['Down Left'], demo)
+        self._down_right = IndicatorSquare(self, settings['Down Right'], demo)
+        self._blink = IndicatorSquare(self, settings['Blink'], demo)
+        
+        # settings variables
+        self._input_duration = settings['Look Duration'] / 1000
+        self._blink_duration = settings['Blink'][4] / 1000
+        self._blink_sensitivity = settings['Blink'][5]
 
         # dictionary for the outputs being able to be sent out over hardware
         self._outputs = {

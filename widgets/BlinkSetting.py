@@ -24,9 +24,15 @@ class BlinkSetting(DirectionSetting):
         self._sensitivity_slider.grid(row=4, column=2, columnspan=2, padx=x_pad, pady=y_pad)
         
     def get_settings(self):
+        '''
+        Gets the settings for a blink input.
+        '''
         return super().get_settings() + (self._blink_duration.get_numeric_value(), round(self._sensitivity_slider.get(), 2))
     
     def set_settings(self, settings):
+        '''
+        Sets the settings for a blink input.
+        '''
         super().set_settings(settings)
         self._blink_duration.set_numeric_value(settings[4])
         self._sensitivity_slider.set(settings[5])

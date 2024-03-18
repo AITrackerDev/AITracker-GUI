@@ -55,5 +55,6 @@
     500,
     0.45
   ],
-  "Look Duration": 500
+  "Look Duration": 500,
+  "Demo Mode": true
 }
