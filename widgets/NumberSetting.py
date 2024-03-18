@@ -8,22 +8,25 @@ class NumberSetting(ctk.CTkFrame):
 
     def __init__(self, root, name):
         super().__init__(root)
-        self.name = name
+        self._name = name
         
         # widgets
         label = ctk.CTkLabel(self, text=name, font=ctk.CTkFont(size=20))
+        ms = ctk.CTkLabel(self, text='Milliseconds', font=ctk.CTkFont(size=10))
         self._entry = NumberEntry(self)
         
         # placements
-        label.grid(row=0, column=0, padx=5, pady=5)
-        self._entry.grid(row=1, column=0, padx=5, pady=5)
+        x_pad,y_pad = 2,2
+        label.grid(row=0, column=0, padx=x_pad, pady=y_pad)
+        ms.grid(row=1, column=0, padx=x_pad, pady=y_pad)
+        self._entry.grid(row=2, column=0, padx=x_pad, pady=y_pad)
 
     def get_value(self):
         '''
         Get the number in the setting.
         '''
         
-        return {self.name:int(self._entry.get_numeric_value())}
+        return {self._name:int(self._entry.get_numeric_value())}
         
     def set_value(self, input_value):
         '''
