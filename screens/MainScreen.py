@@ -1,6 +1,6 @@
 import customtkinter as ctk
 import usb.core
-from IndicatorFrame import DEBUG
+from widgets.IndicatorSquare import DEBUG
 
 class MainScreen(ctk.CTkFrame):
     '''
