@@ -23,7 +23,7 @@ class LaunchScreen(ctk.CTkFrame):
         root.bind('b', lambda event: self.leave_screen(root))
         self.focus_set()
         
-        # demo mode
+        # demo mode setting
         demo = settings['Demo Mode']
 
         # indicator squares
@@ -77,6 +77,8 @@ class LaunchScreen(ctk.CTkFrame):
         self._cam = cv2.VideoCapture(0)
         self._canvas = ctk.CTkCanvas(self, width=self._model.image_size[0], height=self._model.image_size[1])
         self._canvas.place(relx=0.5, rely=0.3, anchor=ctk.CENTER)
+        self._warning_text = ctk.CTkLabel(self, text="", font=ctk.CTkFont(size=40))
+        self._warning_text.place(relx=0.5, rely=0.65, anchor=ctk.CENTER)
         self._update_camera()
 
     def _update_camera(self):
@@ -96,6 +98,7 @@ class LaunchScreen(ctk.CTkFrame):
                 # put image on screen if it's properly resized
                 self._photo = ImageTk.PhotoImage(image=Image.fromarray(cv2.cvtColor(display_image, cv2.COLOR_BGR2RGB)))
                 self._canvas.create_image(0, 0, image=self._photo, anchor=ctk.NW)
+                self._warning_text.configure(text="")
 
                 # save image to make predictions on
                 cv2.imwrite('eye_image.jpg', display_image)
@@ -108,7 +111,7 @@ class LaunchScreen(ctk.CTkFrame):
                 self._blink_detection(frame)
             else:
                 # inform the user their eyes aren't being seen
-                print("temporary text so the if else block doesn't break")
+                self._warning_text.configure(text="Eyes aren't visible!")
         self.after(10, self._update_camera)
 
     def _look_duration(self, prediction: str):
