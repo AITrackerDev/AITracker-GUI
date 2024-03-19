@@ -22,7 +22,7 @@ class AITrackerModel():
         self._image_size = (190, 80)
             
         # load the model into the program
-        self._model = tf.keras.models.load_model(os.path.join('image_classifier2.model'))
+        self._model = tf.keras.models.load_model(os.path.join('image_classifier3.model'))
         
         # load necessary labels into program
         _label_encoder = LabelEncoder()
