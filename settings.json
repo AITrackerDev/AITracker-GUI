@@ -1,48 +1,48 @@
 {
   "Up": [
-    false,
+    true,
     "C0",
     false,
     500
   ],
   "Down": [
-    false,
+    true,
     "C2",
     false,
     500
   ],
   "Left": [
-    false,
+    true,
     "C5",
     false,
     500
   ],
   "Right": [
-    false,
+    true,
     "C3",
     false,
     500
   ],
   "Up Left": [
-    false,
+    true,
     "C7",
     false,
     500
   ],
   "Up Right": [
-    false,
+    true,
     "C4",
     false,
     500
   ],
   "Down Left": [
-    false,
+    true,
     "C7",
     false,
     500
   ],
   "Down Right": [
-    false,
+    true,
     "C1",
     false,
     500
@@ -53,8 +53,8 @@
     false,
     2000,
     0,
-    0.6
+    0.55
   ],
-  "Look Duration": 500,
+  "Look Duration": 0,
   "Demo Mode": true
 }
