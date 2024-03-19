@@ -1,54 +1,54 @@
 {
   "Up": [
-    true,
+    false,
     "C0",
     false,
     500
   ],
   "Down": [
-    true,
+    false,
     "C2",
     false,
     500
   ],
   "Left": [
-    true,
+    false,
     "C5",
     false,
     500
   ],
   "Right": [
-    true,
+    false,
     "C3",
     false,
     500
   ],
   "Up Left": [
-    true,
+    false,
     "C7",
     false,
     500
   ],
   "Up Right": [
-    true,
+    false,
     "C4",
     false,
     500
   ],
   "Down Left": [
-    true,
+    false,
     "C7",
     false,
     500
   ],
   "Down Right": [
-    true,
+    false,
     "C1",
     false,
     500
   ],
   "Blink": [
-    false,
+    true,
     "D4",
     false,
     2000,
