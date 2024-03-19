@@ -51,7 +51,10 @@
     false,
     "D4",
     false,
-    2000
+    2000,
+    500,
+    0.45
   ],
-  "Input Duration": 500
+  "Look Duration": 500,
+  "Demo Mode": true
 }

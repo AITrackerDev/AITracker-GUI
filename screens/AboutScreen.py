@@ -7,10 +7,10 @@ class AboutScreen(ctk.CTkFrame):
     
     def __init__(self, root, screen_changer):
         super().__init__(root, width=root.winfo_width(), height=root.winfo_height())
-        self.screen_changer = screen_changer
+        self._screen_changer = screen_changer
 
         # widget creation
-        _back_button = ctk.CTkButton(self, text='Back', command=lambda: self.screen_changer('MainScreen'))
+        _back_button = ctk.CTkButton(self, text='Back', command=lambda: self._screen_changer('MainScreen'))
         _about_frame = ctk.CTkFrame(self, width=root.winfo_width() * .5, height=root.winfo_height() * .8)
 
         # loads text from 'help.txt' file and puts it into the about_frame

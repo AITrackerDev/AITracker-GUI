@@ -1,6 +1,5 @@
 import customtkinter as ctk
 
-DEBUG = True
 PIN_REGEX = "^C[0-7]$|^D[4-7]$"
 
 class IndicatorSquare(ctk.CTkFrame):
@@ -8,16 +7,18 @@ class IndicatorSquare(ctk.CTkFrame):
     Indicator frame widget that sends outputs through the FT232H board.
     '''
     
-    def __init__(self, root, settings):
+    def __init__(self, root, settings, demo):
         super().__init__(root, width=150, height=150)
         
+        self._demo = demo
+        
         # loads in modules once reaching the launch screen
-        if not DEBUG:
+        if not self._demo:
             self._load_modules()
         
         # set the properties of the frame
         self._active = settings[0]
-        if self._active and not DEBUG:
+        if self._active and not self._demo:
             try:
                 self._pin = digitalio.DigitalInOut(getattr(board, settings[1]))
                 self._pin.direction = digitalio.Direction.OUTPUT
@@ -34,17 +35,16 @@ class IndicatorSquare(ctk.CTkFrame):
         '''
         Send outputs over USB and change the color of the frame.
         '''
-        
         if self._active:
             if self._constant:
                 if self.cget("fg_color") == "white":
                     self.configure(fg_color="green")
-                    if not DEBUG: self._pin.value = True
+                    if not self._demo: self._pin.value = True
                 else:
                     self.configure(fg_color="white")
-                    if not DEBUG: self._pin.value = False
+                    if not self._demo: self._pin.value = False
             else:
-                if not DEBUG: self._pin.value = True
+                if not self._demo: self._pin.value = True
                 self.configure(fg_color="green")
                 self.after(self._out_duration, lambda: self._reset_pin())
                      
@@ -52,15 +52,13 @@ class IndicatorSquare(ctk.CTkFrame):
         '''
         Reset the pin to false and change the color to white.
         '''
-        
         self.configure(fg_color="white")
-        if not DEBUG: self._pin.value = False
+        if not self._demo: self._pin.value = False
     
     def _load_modules(self):
         '''
         Loads the breakout board modules dynamically to prevent the app from freaking out.
         '''
-        
         global board, digitalio
         import board
         import digitalio

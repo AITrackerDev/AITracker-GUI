@@ -2,17 +2,17 @@ import customtkinter as ctk
 import re
 import json
 from widgets.DirectionSetting import DirectionSetting
-from widgets.NumberSetting import NumberSetting
+from widgets.MiscSettings import MiscSettings
 from widgets.IndicatorSquare import PIN_REGEX
+from widgets.BlinkSetting import BlinkSetting
 
 class SettingsScreen(ctk.CTkFrame):
     '''
     The screen used to give the user an easy way to modify settings.
     '''
-    
     def __init__(self, root, screen_changer):
         super().__init__(root, width=root.winfo_width(), height=root.winfo_height())
-        self.screen_changer = screen_changer
+        self._screen_changer = screen_changer
 
         # settings label and back button
         _title = ctk.CTkLabel(self, text='Settings', font=ctk.CTkFont(size=40))
@@ -33,8 +33,8 @@ class SettingsScreen(ctk.CTkFrame):
         self._up_right = DirectionSetting(_settings_frame, name='Up Right')
         self._down_left = DirectionSetting(_settings_frame, name='Down Left')
         self._down_right = DirectionSetting(_settings_frame, name='Down Right')
-        self._blink = DirectionSetting(_settings_frame, name='Blink')
-        self._look_duration = NumberSetting(_settings_frame, name='Input Duration')
+        self._blink = BlinkSetting(_settings_frame, name='Blink')
+        self._misc_settings = MiscSettings(_settings_frame, name='Look Duration')
 
         self._settings = [
             self._up, self._down, self._left, self._right, self._up_left,
@@ -51,19 +51,18 @@ class SettingsScreen(ctk.CTkFrame):
         self._down_left.grid(row=3, column=0, padx=5, pady=5, sticky=ctk.NSEW)
         self._down_right.grid(row=3, column=1, padx=5, pady=5, sticky=ctk.NSEW)
         self._blink.grid(row=4, column=0, padx=5, pady=5, sticky=ctk.NSEW)
-        self._look_duration.grid(row=4, column=1, padx=5, pady=5, sticky=ctk.NSEW)
+        self._misc_settings.grid(row=4, column=1, padx=5, pady=5, sticky=ctk.NSEW)
 
         # load settings from json
         settings_map = load_settings_from_json('settings.json')
         for setting in self._settings:
             setting.set_settings(settings_map[setting.name])
-        self._look_duration.set_value(settings_map['Input Duration'])
+        self._misc_settings.set_value(settings_map['Look Duration'], settings_map['Demo Mode'])
     
     def _save_settings(self):
         '''
         Save the settings to a JSON file and return to the main screen.
         '''
-        
         new_settings = dict()
         invalid_pin = False
 
@@ -76,11 +75,11 @@ class SettingsScreen(ctk.CTkFrame):
                 break
             new_settings.update({setting.name:current_settings})
 
-        new_settings.update(self._look_duration.get_value())
+        new_settings.update(self._misc_settings.get_value())
         
         # save settings
         if not invalid_pin:
-            self.screen_changer('MainScreen')
+            self._screen_changer('MainScreen')
             try:
                 with open('settings.json', 'w') as json_file:
                     json.dump(new_settings, json_file, indent=2)

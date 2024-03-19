@@ -8,7 +8,7 @@ from sklearn.preprocessing import LabelEncoder
 import cv2
 import dlib
 import os
-import math
+from scipy.spatial import distance as dist
 
 class AITrackerModel():
     def __init__(self):
@@ -22,7 +22,7 @@ class AITrackerModel():
         self._image_size = (190, 80)
             
         # load the model into the program
-        self._model = tf.keras.models.load_model(os.path.join('image_classifier2.model'))
+        self._model = tf.keras.models.load_model(os.path.join('image_classifier3.model'))
         
         # load necessary labels into program
         _label_encoder = LabelEncoder()
@@ -109,21 +109,40 @@ class AITrackerModel():
             pad = 5
             
             left_eye = (
+                # horizontal
+                (landmarks.part(36).x, landmarks.part(36).y),
+                (landmarks.part(39).x, landmarks.part(39).y),
+                
+                # left vertical
                 (landmarks.part(37).x, landmarks.part(37).y),
-                (landmarks.part(38).x, landmarks.part(38).y),
                 (landmarks.part(41).x, landmarks.part(41).y),
+                
+                # right vertical
+                (landmarks.part(38).x, landmarks.part(38).y),
                 (landmarks.part(40).x, landmarks.part(40).y)
             )
             
             right_eye = (
+                # horizontal
+                (landmarks.part(42).x, landmarks.part(42).y),
+                (landmarks.part(45).x, landmarks.part(45).y),
+                
+                # left vertical
                 (landmarks.part(43).x, landmarks.part(43).y),
-                (landmarks.part(44).x, landmarks.part(44).y),
                 (landmarks.part(47).x, landmarks.part(47).y),
+                
+                # right vertical
+                (landmarks.part(44).x, landmarks.part(44).y),
                 (landmarks.part(46).x, landmarks.part(46).y)
             )
             
-            left_max_dist = max(math.dist(left_eye[0], left_eye[2]), math.dist(left_eye[1], left_eye[3]))
-            right_max_dist = max(math.dist(right_eye[0], right_eye[2]), math.dist(right_eye[1], right_eye[3]))
-            
-            return (math.floor(left_max_dist), math.floor(right_max_dist))
+            return (self.calculateEAR(left_eye), self.calculateEAR(right_eye))
         return (-1, -1)
+    
+    # https://www.geeksforgeeks.org/eye-blink-detection-with-opencv-python-and-dlib/
+    def calculateEAR(self, eye_points):
+        horizontal_distance = dist.euclidean(eye_points[0], eye_points[1])
+        y_dist_1 = dist.euclidean(eye_points[2], eye_points[3])
+        y_dist_2 = dist.euclidean(eye_points[4], eye_points[5])
+        
+        return (y_dist_1 + y_dist_2) / horizontal_distance

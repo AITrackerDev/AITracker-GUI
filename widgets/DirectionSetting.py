@@ -20,11 +20,13 @@ class DirectionSetting(ctk.CTkFrame):
         self._switch = ctk.CTkSwitch(self, variable=self._switch_var, onvalue=True, offvalue=False, text="Active")
         
         # pin entry
+        self._pin = ctk.CTkLabel(self, text='FT232H Pin Value', font=ctk.CTkFont(size=10))
         self._pin_var = ctk.StringVar(value="")
         self._pin_input = ctk.CTkEntry(self, textvariable=self._pin_var)
         self._pin_input.bind("<KeyRelease>", self._validate_pin)
         
         # output duration entry
+        self._duration = ctk.CTkLabel(self, text='Output Duration (ms)', font=ctk.CTkFont(size=10))
         self._duration_input = NumberEntry(self)
         
         # constant input widgets
@@ -32,12 +34,14 @@ class DirectionSetting(ctk.CTkFrame):
         self._check = ctk.CTkCheckBox(self, variable=self._check_var, onvalue=True, offvalue=False, text="Constant")
         
         #setting placements
-        x_pad,y_pad = 5,5
+        x_pad,y_pad = 2,2
         self._label.grid(row=0, column=0, columnspan=2, padx=x_pad, pady=y_pad)
         self._check.grid(row=0, column=2, padx=x_pad, pady=y_pad)
         self._switch.grid(row=0, column=3, padx=x_pad, pady=y_pad)
-        self._pin_input.grid(row=1, column=0, columnspan=2, padx=x_pad, pady=y_pad)
-        self._duration_input.grid(row=1, column=2, columnspan=2, padx=x_pad, pady=y_pad)
+        self._pin.grid(row=1, column=0, columnspan=2, padx=x_pad, pady=y_pad)
+        self._duration.grid(row=1, column=2, columnspan=2, padx=x_pad, pady=y_pad)
+        self._pin_input.grid(row=2, column=0, columnspan=2, padx=x_pad, pady=y_pad)
+        self._duration_input.grid(row=2, column=2, columnspan=2, padx=x_pad, pady=y_pad)
     
     @property
     def name(self) -> str:

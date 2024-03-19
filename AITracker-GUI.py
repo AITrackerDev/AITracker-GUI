@@ -6,7 +6,7 @@ import customtkinter as ctk
 from screens.MainScreen import MainScreen
 from screens.LaunchScreen import LaunchScreen
 from screens.AboutScreen import AboutScreen
-from screens.SettingsScreen import SettingsScreen
+from screens.SettingsScreen import SettingsScreen, load_settings_from_json
 
 class AITrackerGUI(ctk.CTk):
     '''
@@ -41,7 +41,9 @@ class AITrackerGUI(ctk.CTk):
     def show_screen(self, screen_name):
         '''
         Loads in and displays a new screen as requested.
-        '''
+        '''  
+        # load settings in case they change from screen changes
+        settings = load_settings_from_json('settings.json')
         
         # if the current screen exists
         if self._current_screen:
@@ -49,7 +51,12 @@ class AITrackerGUI(ctk.CTk):
         
         # load new screen
         screen_class = self._screens[screen_name]
-        self._current_screen = screen_class(self, self.show_screen)
+        
+        # if the new screen needs info from the settings
+        if screen_name == 'MainScreen' or screen_name == 'LaunchScreen':
+            self._current_screen = screen_class(self, self.show_screen, settings)
+        else:
+            self._current_screen = screen_class(self, self.show_screen)
         self._current_screen.pack()
 
 if __name__ == '__main__':

@@ -12,9 +12,9 @@ class LaunchScreen(ctk.CTkFrame):
     The screen that the user interacts with using their eyes.
     '''
     
-    def __init__(self, root, screen_changer):
+    def __init__(self, root, screen_changer, settings):
         super().__init__(root, width=root.winfo_width(), height=root.winfo_height())
-        self.screen_changer = screen_changer
+        self._screen_changer = screen_changer
 
         # network and model code
         self._model = AITrackerModel()
@@ -22,19 +22,25 @@ class LaunchScreen(ctk.CTkFrame):
         # leave the screen when 'b' is pressed
         root.bind('b', lambda event: self.leave_screen(root))
         self.focus_set()
+        
+        # demo mode
+        demo = settings['Demo Mode']
 
         # indicator squares
-        _settings = load_settings_from_json('settings.json')
-        self._up = IndicatorSquare(self, _settings['Up'])
-        self._down = IndicatorSquare(self, _settings['Down'])
-        self._left = IndicatorSquare(self, _settings['Left'])
-        self._right = IndicatorSquare(self, _settings['Right'])
-        self._up_left = IndicatorSquare(self, _settings['Up Left'])
-        self._up_right = IndicatorSquare(self, _settings['Up Right'])
-        self._down_left = IndicatorSquare(self, _settings['Down Left'])
-        self._down_right = IndicatorSquare(self, _settings['Down Right'])
-        self._blink = IndicatorSquare(self, _settings['Blink'])
-        self._input_duration = _settings['Input Duration'] / 1000
+        self._up = IndicatorSquare(self, settings['Up'], demo)
+        self._down = IndicatorSquare(self, settings['Down'], demo)
+        self._left = IndicatorSquare(self, settings['Left'], demo)
+        self._right = IndicatorSquare(self, settings['Right'], demo)
+        self._up_left = IndicatorSquare(self, settings['Up Left'], demo)
+        self._up_right = IndicatorSquare(self, settings['Up Right'], demo)
+        self._down_left = IndicatorSquare(self, settings['Down Left'], demo)
+        self._down_right = IndicatorSquare(self, settings['Down Right'], demo)
+        self._blink = IndicatorSquare(self, settings['Blink'], demo)
+        
+        # settings variables
+        self._input_duration = settings['Look Duration'] / 1000
+        self._blink_duration = settings['Blink'][4] / 1000
+        self._blink_sensitivity = settings['Blink'][5]
 
         # dictionary for the outputs being able to be sent out over hardware
         self._outputs = {
@@ -139,18 +145,18 @@ class LaunchScreen(ctk.CTkFrame):
         '''
         
         # calculate distance between the top and bottom of each eye
-        left_eye_dist, right_eye_dist = self._model.eye_distance(frame)
+        left_EAR, right_EAR = self._model.eye_distance(frame)
         
         # in case the eyes can't be seen, skip
-        if left_eye_dist != -1 and right_eye_dist != -1:
+        if left_EAR != -1 and right_EAR != -1:
             # if the eyes are open past a certain point, the user isn't trying to blink
-            if left_eye_dist > 18 and right_eye_dist > 18:
+            if round(left_EAR, 2) > self._blink_sensitivity and round(right_EAR, 2) > self._blink_sensitivity:
                 self._blink_time = time.time()
             
             # the distance between the eyes is small enough to represent a blink
             else:
                 # check if the start time + input duration is bigger then current time
-                if self._blink_time + self._input_duration <= time.time():
+                if self._blink_time + self._blink_duration <= time.time():
                     # send the output since it passed both blocks
                     self._outputs['Blink'].send_output()
                     self._blink_time = time.time()
@@ -166,4 +172,4 @@ class LaunchScreen(ctk.CTkFrame):
 
         self._cam.release()
         root.unbind('b')
-        self.screen_changer('MainScreen')
+        self._screen_changer('MainScreen')

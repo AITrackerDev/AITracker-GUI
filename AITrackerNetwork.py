@@ -51,14 +51,14 @@ model.add(layers.Dense(len(class_names), activation='softmax'))  # Number of cla
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
 # Training the model
-model.fit(training_images, training_labels, epochs=14, validation_data=(testing_images, testing_labels))
+model.fit(training_images, training_labels, epochs=12, validation_data=(testing_images, testing_labels))
 
 # Retrieve final loss and accuracy values for the trained neural network
 loss, accuracy = model.evaluate(testing_images, testing_labels)
 print(f"Loss: {loss}  Accuracy: {accuracy}")
 
 # Save the trained model
-model.save('image_classifier2.model')
+model.save('image_classifier3.model')
 
 # NEW MODEL
 # from tensorflow.keras.models import Sequential

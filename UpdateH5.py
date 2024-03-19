@@ -1,6 +1,59 @@
+import os
 import numpy as np
 import h5py
 from matplotlib import pyplot as plt
+from sklearn.model_selection import train_test_split
+
+
+def print_image_sizes(h5_file):
+    images = h5_file['images'][:]
+    for i, image in enumerate(images):
+        print(f"Size of image {i + 1}: {image.shape}")
+
+def compile_data(input_h5_files, output_train_h5_file, output_test_h5_file, test_size=0.2, random_state=42):
+    # Initialize empty lists to store data from multiple files
+    all_images = []
+    all_labels = []
+
+    # Loop through the list of input H5 files
+    for input_h5_file in input_h5_files:
+        # Open each input H5 file
+        with h5py.File(input_h5_file, 'r') as h5_file:
+            # Print the size of each image before compilation
+            print(f"Printing sizes of images in {input_h5_file}:")
+            print_image_sizes(h5_file)
+
+            # Get the images and labels
+            images = h5_file['images'][:]
+            labels = h5_file['labels'][:]
+
+            # Append data from the current file to the lists
+            all_images.append(images)
+            all_labels.append(labels)
+
+    # Concatenate data from all files
+    images = np.concatenate(all_images, axis=0)
+    labels = np.concatenate(all_labels, axis=0)
+
+    # Split the combined data into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(images, labels, test_size=test_size, random_state=random_state)
+
+    # Create a single H5 file for training data
+    with h5py.File(output_train_h5_file, 'w') as train_h5_file:
+        train_h5_file.create_dataset('images', data=X_train)
+        train_h5_file.create_dataset('labels', data=y_train)
+
+    # Create a single H5 file for testing data
+    with h5py.File(output_test_h5_file, 'w') as test_h5_file:
+        test_h5_file.create_dataset('images', data=X_test)
+        test_h5_file.create_dataset('labels', data=y_test)
+
+def process_all_h5_files(input_dir, output_train_file, output_test_file):
+    # Get a list of all H5 files in the input directory
+    input_h5_files = [os.path.join(input_dir, file) for file in os.listdir(input_dir) if file.endswith('.h5')]
+
+    # Process all H5 files and compile into single training and testing H5 files
+    compile_data(input_h5_files, output_train_file, output_test_file)
 
 # Updates labels in H5 files as they are saved in old data collection app
 def update_labels(input_h5_path, output_h5_path, substring_to_label_mapping):
@@ -79,11 +132,11 @@ def readH5(path):
     for i in range(len(images)):
         label = labels[i].decode()  # Decode the label from bytes to string
         plt.figure()
-        plt.imshow(images[i])
+        plt.imshow(images[i], cmap='gray')
         plt.title(f"Label: {label}")
         plt.show()
 
-readH5('H5Demo/final_eye_data.h5')
+# readH5('H5Demo/g_eye_data.h5')
 
 # Prints all labels in an H5 File
 def print_labels(h5_file_path):
@@ -138,8 +191,8 @@ def combine_h5_files(input_h5_file1, input_h5_file2, output_h5_file):
 
 
 #
-# input_h5_file1_path = 'H5Demo/output_train.h5'
-# input_h5_file2_path = 'H5Demo/output_test.h5'
+# input_h5_file1_path = 'H5Demo/image_collection2024-02-25_17-44-06.h5'
+# input_h5_file2_path = 'H5Demo/TEMP_image_collection2024-03-18_21-07-37.h5'
 # output_h5_file_path = 'H5Demo/eye_data.h5'
 #
 # combine_h5_files(input_h5_file1_path, input_h5_file2_path, output_h5_file_path)
@@ -209,32 +262,75 @@ def check_color_format(h5_file_path):
                 print(f"Image {idx + 1}: Unknown color format (number of channels: {num_channels})")
 
 # # Example usage:
-# h5_file_path = 'H5Demo/final_eye_data.h5'
+# h5_file_path = 'H5Demo/g_eye_data.h5'
 # check_color_format(h5_file_path)
 
 import h5py
 import numpy as np
 
 # **** DOESNT WORK PROPERLY YET
-# def convert_rgb_to_grayscale(h5_file_path, output_h5_path):
-#     # Open the original H5 file in read mode
-#     with h5py.File(h5_file_path, 'r') as input_h5_file:
-#         # Read data from the original file
-#         images_rgb = input_h5_file['images'][:]
-#         labels = input_h5_file['labels'][:]
-#
-#     # Convert RGB images to single-channel grayscale using the luminosity formula
-#     images_gray = np.dot(images_rgb[..., :3], [0.2989, 0.5870, 0.1140])[..., None]
-#
-#     # Create a new H5 file for the converted data
-#     with h5py.File(output_h5_path, 'w') as output_h5_file:
-#         # Create datasets in the new file
-#         output_h5_file.create_dataset('images', data=images_gray)
-#         output_h5_file.create_dataset('labels', data=labels)
-#
-#     print(f"RGB images in '{h5_file_path}' converted to grayscale and saved to '{output_h5_path}'.")
-#
+import h5py
+import numpy as np
+
+def convert_rgb_to_grayscale(h5_file_path, output_h5_path):
+    # Open the original H5 file in read mode
+    with h5py.File(h5_file_path, 'r') as input_h5_file:
+        # Read data from the original file
+        images_rgb = input_h5_file['images'][:]
+        labels = input_h5_file['labels'][:]
+
+    # Convert RGB images to single-channel grayscale
+    images_gray = np.mean(images_rgb, axis=-1, keepdims=True)
+
+    # Create a new H5 file for the converted data
+    with h5py.File(output_h5_path, 'w') as output_h5_file:
+        # Create datasets in the new file
+        output_h5_file.create_dataset('images', data=images_gray)
+        output_h5_file.create_dataset('labels', data=labels)
+
+    print(f"RGB images in '{h5_file_path}' converted to grayscale and saved to '{output_h5_path}'.")
+
+
 # # Example usage:
 # h5_file_path = 'H5Demo/final_eye_data.h5'
-# output_h5_path = 'H5Demo/g_eye_data.h5'
+# output_h5_path = 'H5Demo/TEMP.h5'
 # convert_rgb_to_grayscale(h5_file_path, output_h5_path)
+
+if __name__ == "__main__":
+    # Specify the input directory containing H5 files
+    input_directory = 'H5Demo'
+
+    # Specify the output file paths for training and testing H5 files
+    output_train_file_path = 'H5Demo/TEMP_output_train.h5'
+    output_test_file_path = 'H5Demo/TEMP_output_test.h5'
+
+    # Process all H5 files in the input directory
+    # process_all_h5_files(input_directory, output_train_file_path, output_test_file_path)
+
+    print("Data split and saved successfully.")
+
+    substring_to_label_mapping = {
+        'northwest': 'North West',
+        'northeast': 'North East',
+        'southwest': 'South West',
+        'southeast': 'South East',
+        'north': 'North',
+        'south': 'South',
+        'west': 'West',
+        'east': 'East',
+        'center': 'Center'
+    }
+
+    # combine_h5_files('H5Demo/TEMP_output_test.h5', 'H5Demo/TEMP_output_train.h5', 'H5Demo/TEMP_combined_data.h5')
+    # check_color_format('H5Demo/TEMP_combined_data.h5')
+    # update_labels('H5Demo/TEMP_combined_data.h5', 'H5Demo/final_eye_data.h5', substring_to_label_mapping)
+    # print_labels('H5Demo/final_eye_data.h5')
+    print_labels('H5Demo/final_eye_data.h5')
+
+    # Remove all H5 files except 'final_eye_data.h5'
+    for file_name in os.listdir(input_directory):
+        if file_name.startswith('TEMP'):
+            os.remove(os.path.join(input_directory, file_name))
+            print(f"Removed {file_name}.")
+
+    # readH5('H5Demo/final_eye_data.h5')
