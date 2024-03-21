@@ -3,7 +3,6 @@ import customtkinter as ctk
 import cv2
 import time
 from PIL import Image, ImageTk
-from screens.SettingsScreen import load_settings_from_json
 from widgets.IndicatorSquare import IndicatorSquare
 from AITrackerModel import AITrackerModel
 
@@ -17,13 +16,13 @@ class LaunchScreen(ctk.CTkFrame):
         self._screen_changer = screen_changer
 
         # network and model code
-        self._model = AITrackerModel()
+        self._model = AITrackerModel(0)
 
         # leave the screen when 'b' is pressed
         root.bind('b', lambda event: self.leave_screen(root))
         self.focus_set()
         
-        # demo mode
+        # demo mode setting
         demo = settings['Demo Mode']
 
         # indicator squares
@@ -77,8 +76,10 @@ class LaunchScreen(ctk.CTkFrame):
         self._cam = cv2.VideoCapture(0)
         self._canvas = ctk.CTkCanvas(self, width=self._model.image_size[0], height=self._model.image_size[1])
         self._canvas.place(relx=0.5, rely=0.3, anchor=ctk.CENTER)
+        self._warning_text = ctk.CTkLabel(self, text="", font=ctk.CTkFont(size=40))
+        self._warning_text.place(relx=0.5, rely=0.65, anchor=ctk.CENTER)
         self._update_camera()
-
+    
     def _update_camera(self):
         '''
         Updates the camera feed and performs the necessary prediction/blink detection. Also displays the cropped
@@ -88,28 +89,23 @@ class LaunchScreen(ctk.CTkFrame):
         ret, frame = self._cam.read()
         if ret:
             # crop the image to our network's expectation
-            image_crop = self._model.process_image(cv2.flip(frame, 1))
-            display_image, correct = image_crop[0], image_crop[1]
+            cropped_image, correct = self._model.process_image(cv2.flip(frame, 1))
 
             # if the image is valid
             if correct:
                 # put image on screen if it's properly resized
-                self._photo = ImageTk.PhotoImage(image=Image.fromarray(cv2.cvtColor(display_image, cv2.COLOR_BGR2RGB)))
+                self._photo = ImageTk.PhotoImage(image=Image.fromarray(cv2.cvtColor(cropped_image, cv2.COLOR_BGR2RGB)))
                 self._canvas.create_image(0, 0, image=self._photo, anchor=ctk.NW)
+                self._warning_text.configure(text="")
 
-                # save image to make predictions on
-                cv2.imwrite('eye_image.jpg', display_image)
-
-                # make prediction on saved image
-                prediction = self._model.predict_direction(cv2.imread('eye_image.jpg'))
-
+                # make prediction
+                prediction = self._model.predict_direction(cropped_image)
                 self._look_duration(prediction)
-
-                self._blink_detection(frame)
+                self._blink_detection()
             else:
                 # inform the user their eyes aren't being seen
-                print("temporary text so the if else block doesn't break")
-        self.after(10, self._update_camera)
+                self._warning_text.configure(text="Eyes aren't visible!")
+        self.after(5, self._update_camera)
 
     def _look_duration(self, prediction: str):
         '''
@@ -135,7 +131,7 @@ class LaunchScreen(ctk.CTkFrame):
                 self._current_direction = 'Center'
                 self._blink_time = time.time()
 
-    def _blink_detection(self, frame):
+    def _blink_detection(self):
         '''
         Check if the user has blinked for a certain amount of time.
         
@@ -145,7 +141,7 @@ class LaunchScreen(ctk.CTkFrame):
         '''
         
         # calculate distance between the top and bottom of each eye
-        left_EAR, right_EAR = self._model.eye_distance(frame)
+        left_EAR, right_EAR = self._model.EAR
         
         # in case the eyes can't be seen, skip
         if left_EAR != -1 and right_EAR != -1:
@@ -165,11 +161,6 @@ class LaunchScreen(ctk.CTkFrame):
         '''
         Performs certain actions to 'clean up' the screen and leave without issues.
         '''
-        
-        # remove eye image (temporary fix)
-        if os.path.exists('eye_image.jpg'):
-            os.remove('eye_image.jpg')
-
         self._cam.release()
         root.unbind('b')
         self._screen_changer('MainScreen')

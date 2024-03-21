@@ -1,18 +1,11 @@
-import cv2 as cv
-import h5py
-import numpy as np
-import matplotlib.pyplot as plt
-from keras import datasets, layers, models
-from sklearn.model_selection import train_test_split
-
 import h5py
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
-from tensorflow.keras import models, layers
+from keras import models, layers
 
 # Load data from H5 file
-with h5py.File('H5Demo/final_eye_data.h5', 'r') as h5_file:
+with h5py.File('final_eye_data.h5', 'r') as h5_file:
     images = h5_file['images'][:]
     labels_str = h5_file['labels'][:]
 
@@ -29,12 +22,12 @@ training_images, testing_images = training_images / 255, testing_images / 255  #
 # The labels that the neural network can identify given an image
 class_names = label_encoder.classes_
 
-# COMMENT UP TO LINE 52 AFTER MODEL IS TRAINED
 # Model layers
 model = models.Sequential()
 
 # Convolutional layers
-model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(80, 190, 3)))  # 80x190 pixels, 3 colors
+model.add(layers.Reshape((80, 190, 1), input_shape=(80, 190)))
+model.add(layers.Conv2D(32, (3, 3), activation='relu'))
 model.add(layers.MaxPooling2D(2, 2))
 model.add(layers.Conv2D(64, (3, 3), activation='relu'))
 model.add(layers.MaxPooling2D(2, 2))
@@ -51,14 +44,14 @@ model.add(layers.Dense(len(class_names), activation='softmax'))  # Number of cla
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
 # Training the model
-model.fit(training_images, training_labels, epochs=12, validation_data=(testing_images, testing_labels))
+model.fit(training_images, training_labels, epochs=30, validation_data=(testing_images, testing_labels))
 
 # Retrieve final loss and accuracy values for the trained neural network
 loss, accuracy = model.evaluate(testing_images, testing_labels)
 print(f"Loss: {loss}  Accuracy: {accuracy}")
 
 # Save the trained model
-model.save('image_classifier3.model')
+model.save('image_classifier4.model')
 
 # NEW MODEL
 # from tensorflow.keras.models import Sequential

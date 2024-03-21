@@ -52,9 +52,9 @@
     "D4",
     false,
     2000,
-    500,
-    0.45
+    0,
+    0.55
   ],
-  "Look Duration": 500,
+  "Look Duration": 0,
   "Demo Mode": true
 }

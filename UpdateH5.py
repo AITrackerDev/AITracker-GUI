@@ -95,6 +95,43 @@ def update_labels(input_h5_path, output_h5_path, substring_to_label_mapping):
 
     print(f"Updated H5 file saved to '{output_h5_path}'.")
 
+def image_to_numpy_arr(h5_file):
+    # Open the HDF5 file
+    with h5py.File(h5_file, 'r') as f:
+        # Assuming the dataset containing images is named 'images'
+        images_dataset = f['images']
+        
+        # Assuming the dataset containing labels is named 'labels'
+        labels_dataset = f['labels']
+        
+        # Initialize an empty list to store grayscale images
+        grayscale_images = []
+        labels = []
+        
+        # Iterate over each image and label in the datasets
+        for image_data, label in zip(images_dataset, labels_dataset):
+            # Collapse the three channels into one by averaging
+            grayscale_image = np.mean(image_data, axis=2)
+            
+            # Append the grayscale image to the list
+            grayscale_images.append(grayscale_image)
+            
+            # Append the label to the list
+            labels.append(label)
+
+    # Convert the list of grayscale images and labels to numpy arrays
+    grayscale_images = np.array(grayscale_images)
+    labels = np.array(labels)
+    
+    os.remove(h5_file)
+
+    # Open the HDF5 file again in write mode to save the processed data
+    with h5py.File(h5_file, 'w') as f:
+        # Create datasets for images and labels
+        f.create_dataset('images', data=grayscale_images)
+        f.create_dataset('labels', data=labels)
+
+
 # Example usage:
 substring_to_label_mapping = {
     'northwest': 'North West',
