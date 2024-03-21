@@ -3,7 +3,6 @@ import customtkinter as ctk
 import cv2
 import time
 from PIL import Image, ImageTk
-from screens.SettingsScreen import load_settings_from_json
 from widgets.IndicatorSquare import IndicatorSquare
 from AITrackerModel import AITrackerModel
 
