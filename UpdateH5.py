@@ -321,11 +321,10 @@ if __name__ == "__main__":
         'center': 'Center'
     }
 
-    # combine_h5_files('H5Demo/TEMP_output_test.h5', 'H5Demo/TEMP_output_train.h5', 'H5Demo/TEMP_combined_data.h5')
+    combine_h5_files('H5Demo/final_eye_data.h5', 'H5Demo/image_collection2024-03-19_09-54-18.h5', 'H5Demo/TEMP_combined_data.h5')
     # check_color_format('H5Demo/TEMP_combined_data.h5')
-    # update_labels('H5Demo/TEMP_combined_data.h5', 'H5Demo/final_eye_data.h5', substring_to_label_mapping)
+    update_labels('H5Demo/TEMP_combined_data.h5', 'H5Demo/NEW_final_eye_data.h5', substring_to_label_mapping)
     # print_labels('H5Demo/final_eye_data.h5')
-    print_labels('H5Demo/final_eye_data.h5')
 
     # Remove all H5 files except 'final_eye_data.h5'
     for file_name in os.listdir(input_directory):
