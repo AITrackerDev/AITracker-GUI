@@ -28,10 +28,13 @@ class IndicatorSquare(ctk.CTkFrame):
         self._constant = settings[2]
         self._out_duration = settings[3]
         
+        if self._active:
+            self.bind("<Button-1>", self.send_output)
+        
         # don't show the frame if the setting isn't active
         self.configure(fg_color="white" if self._active else "transparent")
     
-    def send_output(self):
+    def send_output(self, event):
         '''
         Send outputs over USB and change the color of the frame.
         '''

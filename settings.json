@@ -24,25 +24,25 @@
     500
   ],
   "Up Left": [
-    true,
+    false,
     "C7",
     false,
     500
   ],
   "Up Right": [
-    true,
+    false,
     "C4",
     false,
     500
   ],
   "Down Left": [
-    true,
+    false,
     "C7",
     false,
     500
   ],
   "Down Right": [
-    true,
+    false,
     "C1",
     false,
     500
@@ -55,6 +55,6 @@
     0,
     0.55
   ],
-  "Look Duration": 0,
+  "Look Duration": 500,
   "Demo Mode": true
 }

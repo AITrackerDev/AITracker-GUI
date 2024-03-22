@@ -126,18 +126,35 @@ class LaunchScreen(ctk.CTkFrame):
             # check if the start time + input duration is bigger then current time
             if self._look_time + self._input_duration <= time.time():
                 # send the output since it passed both blocks
-                if prediction != 'Center':
-                    self._outputs[prediction].send_output()
+                # if prediction != 'Center':
+                #     self._outputs[prediction].send_output()
+                self._send_multiple_outputs(prediction)
                 self._current_direction = 'Center'
                 self._blink_time = time.time()
+                
+    def _send_multiple_outputs(self, prediction):
+        if prediction != 'Center':
+            if prediction == 'North West':
+                self._outputs['North'].send_output()
+                self._outputs['West'].send_output()
+            elif prediction == 'North East':
+                self._outputs['North'].send_output()
+                self._outputs['East'].send_output()
+            elif prediction == 'South West':
+                self._outputs['South'].send_output()
+                self._outputs['West'].send_output()
+            elif prediction == 'South East':
+                self._outputs['South'].send_output()
+                self._outputs['East'].send_output()
+            else:
+                self._outputs[prediction].send_output()
+
+    def _send_blink(self):
+        print('blinky')
 
     def _blink_detection(self):
         '''
         Check if the user has blinked for a certain amount of time.
-        
-        Parameters:
-        -----------
-            frame: The current frame to check the distances of the top and bottom of each eye.
         '''
         
         # calculate distance between the top and bottom of each eye
