@@ -150,7 +150,10 @@ class LaunchScreen(ctk.CTkFrame):
                 self._outputs[prediction].send_output()
 
     def _send_blink(self):
-        print('blinky')
+        self._outputs['North'].send_output()
+        self._outputs['East'].send_output()
+        self._outputs['South'].send_output()
+        self._outputs['West'].send_output()
 
     def _blink_detection(self):
         '''
