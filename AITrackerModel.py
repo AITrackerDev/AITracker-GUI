@@ -45,7 +45,7 @@ class AITrackerModel():
         self._EAR = None
             
         # load the model into the program
-        self._model = tf.keras.models.load_model(os.path.join('image_classifier4.model'))
+        self._model = tf.keras.models.load_model(os.path.join('image_classifier3.model'))
         
         # load necessary labels into program
         _label_encoder = LabelEncoder()
