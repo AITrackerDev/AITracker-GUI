@@ -7,13 +7,13 @@
   ],
   "Down": [
     true,
-    "C2",
+    "C1",
     false,
     500
   ],
   "Left": [
     true,
-    "C5",
+    "C2",
     false,
     500
   ],
@@ -56,5 +56,5 @@
     0.55
   ],
   "Look Duration": 500,
-  "Demo Mode": true
+  "Demo Mode": false
 }

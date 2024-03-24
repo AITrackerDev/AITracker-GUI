@@ -6,6 +6,8 @@ from PIL import Image, ImageTk
 from widgets.IndicatorSquare import IndicatorSquare
 from AITrackerModel import AITrackerModel
 
+CAR_DEMO = True
+
 class LaunchScreen(ctk.CTkFrame):
     '''
     The screen that the user interacts with using their eyes.
@@ -126,13 +128,15 @@ class LaunchScreen(ctk.CTkFrame):
             # check if the start time + input duration is bigger then current time
             if self._look_time + self._input_duration <= time.time():
                 # send the output since it passed both blocks
-                # if prediction != 'Center':
-                #     self._outputs[prediction].send_output()
-                self._send_multiple_outputs(prediction)
+                if CAR_DEMO:
+                    self._send_multiple_outputs_CAR(prediction)
+                else:
+                    if prediction != 'Center':
+                        self._outputs[prediction].send_output()
                 self._current_direction = 'Center'
                 self._blink_time = time.time()
                 
-    def _send_multiple_outputs(self, prediction):
+    def _send_multiple_outputs_CAR(self, prediction):
         if prediction != 'Center':
             if prediction == 'North West':
                 self._outputs['North'].send_output()
@@ -149,7 +153,7 @@ class LaunchScreen(ctk.CTkFrame):
             else:
                 self._outputs[prediction].send_output()
 
-    def _send_blink(self):
+    def _send_blink_CAR(self):
         self._outputs['North'].send_output()
         self._outputs['East'].send_output()
         self._outputs['South'].send_output()
@@ -174,7 +178,10 @@ class LaunchScreen(ctk.CTkFrame):
                 # check if the start time + input duration is bigger then current time
                 if self._blink_time + self._blink_duration <= time.time():
                     # send the output since it passed both blocks
-                    self._outputs['Blink'].send_output()
+                    if CAR_DEMO:
+                        self._send_blink_CAR()
+                    else:
+                        self._outputs['Blink'].send_output()
                     self._blink_time = time.time()
 
     def leave_screen(self, root):
