@@ -82,7 +82,7 @@ class LaunchScreen(ctk.CTkFrame):
         self._warning_text = ctk.CTkLabel(self, text="", font=ctk.CTkFont(size=40))
         self._warning_text.place(relx=0.5, rely=0.65, anchor=ctk.CENTER)
 
-        process = multiprocessing.Process(target=self._update_camera(), name="camera")
+        process = multiprocessing.Process(target=self._update_camera, name="camera")
         process.start()
     
     def _update_camera(self):
