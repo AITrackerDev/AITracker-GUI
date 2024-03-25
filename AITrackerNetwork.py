@@ -5,7 +5,7 @@ from sklearn.preprocessing import LabelEncoder
 from keras import models, layers
 
 # Load data from H5 file
-with h5py.File('final_eye_data.h5', 'r') as h5_file:
+with h5py.File('H5Demo/numpy_eye_data.h5', 'r') as h5_file:
     images = h5_file['images'][:]
     labels_str = h5_file['labels'][:]
 
@@ -44,14 +44,14 @@ model.add(layers.Dense(len(class_names), activation='softmax'))  # Number of cla
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
 # Training the model
-model.fit(training_images, training_labels, epochs=30, validation_data=(testing_images, testing_labels))
+model.fit(training_images, training_labels, epochs=16, validation_data=(testing_images, testing_labels))
 
 # Retrieve final loss and accuracy values for the trained neural network
 loss, accuracy = model.evaluate(testing_images, testing_labels)
 print(f"Loss: {loss}  Accuracy: {accuracy}")
 
 # Save the trained model
-model.save('image_classifier4.model')
+model.save('image_classifier5.model')
 
 # NEW MODEL
 # from tensorflow.keras.models import Sequential
