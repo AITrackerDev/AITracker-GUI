@@ -24,31 +24,31 @@
     500
   ],
   "Up Left": [
-    false,
+    true,
     "C7",
     false,
     500
   ],
   "Up Right": [
-    false,
+    true,
     "C4",
     false,
     500
   ],
   "Down Left": [
-    false,
+    true,
     "C7",
     false,
     500
   ],
   "Down Right": [
-    false,
+    true,
     "C1",
     false,
     500
   ],
   "Blink": [
-    false,
+    true,
     "D4",
     false,
     2000,
@@ -56,5 +56,5 @@
     0.55
   ],
   "Look Duration": 500,
-  "Demo Mode": false
+  "Demo Mode": true
 }

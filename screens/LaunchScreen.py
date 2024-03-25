@@ -6,7 +6,7 @@ from PIL import Image, ImageTk
 from widgets.IndicatorSquare import IndicatorSquare
 from AITrackerModel import AITrackerModel
 
-CAR_DEMO = True
+CAR_DEMO = False
 
 class LaunchScreen(ctk.CTkFrame):
     '''
