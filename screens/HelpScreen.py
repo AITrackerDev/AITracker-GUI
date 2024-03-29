@@ -1,4 +1,5 @@
 import customtkinter as ctk
+import os
 
 class HelpScreen(ctk.CTkFrame):
     '''
@@ -9,23 +10,16 @@ class HelpScreen(ctk.CTkFrame):
         self._screen_changer = screen_changer
         _scroll_frame_wid = self.cget('width') // 4.5
         _scroll_frame_hei = self.cget('height') * .73
-        print(f'{_scroll_frame_hei} {_scroll_frame_wid}')
         
         # this screen's widgets
         _help_label = ctk.CTkLabel(self, text='Help', font=ctk.CTkFont(size=40))
         _about_label = ctk.CTkLabel(self, text='About', font=ctk.CTkFont(size=25))
         _launch_label = ctk.CTkLabel(self, text='Launch Screen', font=ctk.CTkFont(size=25))
         _settings_label = ctk.CTkLabel(self, text='Settings Screen', font=ctk.CTkFont(size=25))
-        _about_frame = ctk.CTkScrollableFrame(self, width=_scroll_frame_wid, height=_scroll_frame_hei)
-        _launch_frame = ctk.CTkScrollableFrame(self, width=_scroll_frame_wid, height=_scroll_frame_hei)
-        _settings_frame = ctk.CTkScrollableFrame(self, width=_scroll_frame_wid, height=_scroll_frame_hei)
+        _about_frame = ctk.CTkFrame(self, width=_scroll_frame_wid, height=_scroll_frame_hei)
+        _launch_frame = ctk.CTkFrame(self, width=_scroll_frame_wid, height=_scroll_frame_hei)
+        _settings_frame = ctk.CTkFrame(self, width=_scroll_frame_wid, height=_scroll_frame_hei)
         _back_button = ctk.CTkButton(self, text='Back', command=lambda: self._screen_changer('MainScreen'))
-
-        # about section of help
-        
-        # launch section of help
-        
-        # settings section of help
         
         # placing widgets on this screen
         _help_label.place(relx=.5, rely=0.05, anchor=ctk.CENTER)
@@ -36,3 +30,25 @@ class HelpScreen(ctk.CTkFrame):
         _launch_frame.place(relx=.5, rely=0.55, anchor=ctk.CENTER)
         _settings_frame.place(relx=.75, rely=0.55, anchor=ctk.CENTER)
         _back_button.place(relx=.5, rely=0.95, anchor=ctk.CENTER)
+
+        # about section of help
+        _about_text = self._remove_newline(os.path.join('assets', 'about.txt'))
+        _about_label_text = ctk.CTkLabel(_about_frame, text=_about_text, anchor=ctk.W, justify='left', font=ctk.CTkFont(size=15), wraplength=350)
+        _about_label_text.grid(row=0, column=0, padx=5, pady=5)
+        
+        # launch section of help
+        _launch_text = self._remove_newline(os.path.join('assets', 'launch.txt'))
+        _launch_label_text = ctk.CTkLabel(_launch_frame, text=_launch_text, anchor=ctk.W, justify='left', font=ctk.CTkFont(size=15), wraplength=350)
+        _launch_label_text.grid(row=0, column=0, padx=5, pady=5)
+        
+        # settings section of help
+        _settings_text = self._remove_newline(os.path.join('assets', 'settings.txt'))
+        _settings_label_text = ctk.CTkLabel(_settings_frame, text=_settings_text, anchor=ctk.W, justify='left', font=ctk.CTkFont(size=15), wraplength=350)
+        _settings_label_text.grid(row=0, column=0, padx=5, pady=5)
+    
+    def _remove_newline(self, text_file):
+        with open(text_file, "r") as file:
+            content = file.read()
+        
+        # remove newline characters
+        return content.replace('\n', ' ')
