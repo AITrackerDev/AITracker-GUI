@@ -107,7 +107,7 @@ class LaunchScreen(ctk.CTkFrame):
             else:
                 # inform the user their eyes aren't being seen
                 self._warning_text.configure(text="Eyes aren't visible!")
-        self.after(5, self._update_camera)
+        self.after(1, self._update_camera)
 
     def _look_duration(self, prediction: str):
         '''
