@@ -1,47 +1,47 @@
 {
-  "Up": [
+  "North": [
     true,
     "C0",
     false,
     500
   ],
-  "Down": [
+  "South": [
     true,
     "C1",
     false,
     500
   ],
-  "Left": [
+  "West": [
     true,
     "C2",
     false,
     500
   ],
-  "Right": [
+  "East": [
     true,
     "C3",
     false,
     500
   ],
-  "Up Left": [
+  "North West": [
     true,
     "C7",
     false,
     500
   ],
-  "Up Right": [
+  "North East": [
     true,
     "C4",
     false,
     500
   ],
-  "Down Left": [
+  "South West": [
     true,
     "C7",
     false,
     500
   ],
-  "Down Right": [
+  "South East": [
     true,
     "C1",
     false,

@@ -51,7 +51,7 @@ loss, accuracy = model.evaluate(testing_images, testing_labels)
 print(f"Loss: {loss}  Accuracy: {accuracy}")
 
 # Save the trained model
-model.save('image_classifier4.model')
+model.save('image_classifier5.model')
 
 # NEW MODEL
 # from tensorflow.keras.models import Sequential

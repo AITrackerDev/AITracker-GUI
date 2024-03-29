@@ -28,14 +28,14 @@ class LaunchScreen(ctk.CTkFrame):
         demo = settings['Demo Mode']
 
         # indicator squares
-        self._up = IndicatorSquare(self, settings['Up'], demo)
-        self._down = IndicatorSquare(self, settings['Down'], demo)
-        self._left = IndicatorSquare(self, settings['Left'], demo)
-        self._right = IndicatorSquare(self, settings['Right'], demo)
-        self._up_left = IndicatorSquare(self, settings['Up Left'], demo)
-        self._up_right = IndicatorSquare(self, settings['Up Right'], demo)
-        self._down_left = IndicatorSquare(self, settings['Down Left'], demo)
-        self._down_right = IndicatorSquare(self, settings['Down Right'], demo)
+        self._north = IndicatorSquare(self, settings['North'], demo)
+        self._south = IndicatorSquare(self, settings['South'], demo)
+        self._west = IndicatorSquare(self, settings['West'], demo)
+        self._east = IndicatorSquare(self, settings['East'], demo)
+        self._north_west = IndicatorSquare(self, settings['North West'], demo)
+        self._north_east = IndicatorSquare(self, settings['North East'], demo)
+        self._south_west = IndicatorSquare(self, settings['South West'], demo)
+        self._south_east = IndicatorSquare(self, settings['South East'], demo)
         self._blink = IndicatorSquare(self, settings['Blink'], demo)
         
         # settings variables
@@ -45,27 +45,27 @@ class LaunchScreen(ctk.CTkFrame):
 
         # dictionary for the outputs being able to be sent out over hardware
         self._outputs = {
-            'North':self._up,
-            'South':self._down,
-            'West':self._left,
-            'East':self._right,
-            'North West':self._up_left,
-            'North East':self._up_right,
-            'South West':self._down_left,
-            'South East':self._down_right,
+            'North':self._north,
+            'South':self._south,
+            'West':self._west,
+            'East':self._east,
+            'North West':self._north_west,
+            'North East':self._north_east,
+            'South West':self._south_west,
+            'South East':self._south_east,
             'Blink':self._blink
         }
 
         #placing squares
-        self._up_left.place(relx=0, rely=0, anchor=ctk.NW)
-        self._up.place(relx=0.5, rely=0, anchor=ctk.N)
-        self._up_right.place(relx=1, rely=0, anchor=ctk.NE)
-        self._left.place(relx=0, rely=0.5, anchor=ctk.W)
+        self._north_west.place(relx=0, rely=0, anchor=ctk.NW)
+        self._north.place(relx=0.5, rely=0, anchor=ctk.N)
+        self._north_east.place(relx=1, rely=0, anchor=ctk.NE)
+        self._west.place(relx=0, rely=0.5, anchor=ctk.W)
         self._blink.place(relx=0.5, rely=0.5, anchor=ctk.CENTER)
-        self._right.place(relx=1, rely=0.5, anchor=ctk.E)
-        self._down_left.place(relx=0, rely=1, anchor=ctk.SW)
-        self._down.place(relx=0.5, rely=1, anchor=ctk.S)
-        self._down_right.place(relx=1, rely=1, anchor=ctk.SE)
+        self._east.place(relx=1, rely=0.5, anchor=ctk.E)
+        self._south_west.place(relx=0, rely=1, anchor=ctk.SW)
+        self._south.place(relx=0.5, rely=1, anchor=ctk.S)
+        self._south_east.place(relx=1, rely=1, anchor=ctk.SE)
 
         # look duration variables
         self._current_direction = 'Center'
@@ -186,7 +186,7 @@ class LaunchScreen(ctk.CTkFrame):
 
     def leave_screen(self, root):
         '''
-        Performs certain actions to 'clean up' the screen and leave without issues.
+        Cleans up the screen and leaves.
         '''
         self._cam.release()
         root.unbind('b')
