@@ -5,7 +5,7 @@ import ctypes
 import customtkinter as ctk
 from screens.MainScreen import MainScreen
 from screens.LaunchScreen import LaunchScreen
-from screens.AboutScreen import AboutScreen
+from screens.HelpScreen import HelpScreen
 from screens.SettingsScreen import SettingsScreen, load_settings_from_json
 
 class AITrackerGUI(ctk.CTk):
@@ -31,7 +31,7 @@ class AITrackerGUI(ctk.CTk):
         self._screens = {
             'MainScreen':MainScreen,
             'LaunchScreen':LaunchScreen,
-            'AboutScreen':AboutScreen,
+            'HelpScreen':HelpScreen,
             'SettingsScreen':SettingsScreen
         }
         
