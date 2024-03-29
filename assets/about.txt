@@ -1,0 +1,3 @@
+AITracker is a neural network designed to determine the direction of where you are looking with just a simple webcam. 
+This application is designed to be an all-in-one place where you can connect to any hardware with GPIO pins. 
+This application is designed to be used with the Adafruit FT232H breakout board, although the source code is available on GitHub for anyone to add functionality to.

@@ -1,0 +1,3 @@
+This is where the application is used. Each of the boxes shown on screen are the current inputs being tracked (as determined by the settings). 
+When an input is detected, the box will change color to indicate as such. 
+These boxes are also used as a landmark so you have an idea where to look for that input.
