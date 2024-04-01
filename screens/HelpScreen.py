@@ -33,17 +33,20 @@ class HelpScreen(ctk.CTkFrame):
 
         # about section of help
         _about_text = self._remove_newline(os.path.join('assets', 'about.txt'))
-        _about_label_text = ctk.CTkLabel(_about_frame, text=_about_text, anchor=ctk.W, justify='left', font=ctk.CTkFont(size=15), wraplength=350)
+        _about_label_text = ctk.CTkTextbox(_about_frame, width=_scroll_frame_wid, height=_scroll_frame_hei, font=ctk.CTkFont(size=15), wrap=ctk.WORD)
+        _about_label_text.insert('0.0', _about_text)
         _about_label_text.grid(row=0, column=0, padx=5, pady=5)
         
         # launch section of help
         _launch_text = self._remove_newline(os.path.join('assets', 'launch.txt'))
-        _launch_label_text = ctk.CTkLabel(_launch_frame, text=_launch_text, anchor=ctk.W, justify='left', font=ctk.CTkFont(size=15), wraplength=350)
+        _launch_label_text = ctk.CTkTextbox(_launch_frame, width=_scroll_frame_wid, height=_scroll_frame_hei, font=ctk.CTkFont(size=15), wrap=ctk.WORD)
+        _launch_label_text.insert('0.0', _launch_text)
         _launch_label_text.grid(row=0, column=0, padx=5, pady=5)
         
         # settings section of help
         _settings_text = self._remove_newline(os.path.join('assets', 'settings.txt'))
-        _settings_label_text = ctk.CTkLabel(_settings_frame, text=_settings_text, anchor=ctk.W, justify='left', font=ctk.CTkFont(size=15), wraplength=350)
+        _settings_label_text = ctk.CTkTextbox(_settings_frame, width=_scroll_frame_wid, height=_scroll_frame_hei, font=ctk.CTkFont(size=15), wrap=ctk.WORD)
+        _settings_label_text.insert('0.0', _settings_text)
         _settings_label_text.grid(row=0, column=0, padx=5, pady=5)
     
     def _remove_newline(self, text_file):
