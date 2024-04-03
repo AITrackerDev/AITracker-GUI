@@ -20,3 +20,4 @@ CAR_KEYS.py
 *.hdf5
 env/
 test.py
+wandb/

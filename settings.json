@@ -48,12 +48,12 @@
     500
   ],
   "Blink": [
-    true,
+    false,
     "D4",
     false,
     2000,
     0,
-    0.55
+    0.5
   ],
   "Look Duration": 500,
   "Demo Mode": true
