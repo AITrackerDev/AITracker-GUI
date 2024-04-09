@@ -1,3 +1,7 @@
-This is where the application is used. Each of the boxes shown on screen are the current inputs being tracked (as determined by the settings). 
-When an input is detected, the box will change color to indicate as such. 
-These boxes are also used as a landmark so you have an idea where to look for that input.
+The launch screen comprises of a few components.
+One of which is a live camera feed of what our NN is making predictions on, processing the images using the same algorithm used in the data collection app, now being fed into the neural network to make predictions on.
+The other element of this screen is the landmarks to look at to send a signal for that direction.
+These are placed in the same locations as the points in the data collection app, and light up green indicating that direction was recognized.
+This is also where all the settings from the settings screen come into play, as they are reflected in this screen.
+For example, if the look duration is set to 1000 milliseconds, the user would have to look at a square for a second before the input is sent.
+In addition to this, the app also tracks blinks, adding an additional input mechanism using just the eyes.

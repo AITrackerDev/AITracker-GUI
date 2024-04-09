@@ -54,4 +54,7 @@ class HelpScreen(ctk.CTkFrame):
             content = file.read()
         
         # remove newline characters
-        return content.replace('\n', ' ')
+        content.replace('\n', ' ')
+        
+        # put back the newline characters for double spaces
+        return content.replace('  ', '\n')

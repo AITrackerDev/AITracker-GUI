@@ -7,7 +7,7 @@ from sklearn.preprocessing import LabelEncoder
 from keras import models, layers, callbacks
 
 EPOCHS = 30
-MODEL_FILE = 'image_classifier5.model'
+MODEL_FILE = 'image_classifier5.keras'
 PATIENCE = int(EPOCHS * .2)
 
 # Load data from H5 file

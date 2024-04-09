@@ -3,10 +3,10 @@
     true,
     "C0",
     false,
-    500
+    4000
   ],
   "South": [
-    true,
+    false,
     "C1",
     false,
     500
@@ -15,34 +15,34 @@
     true,
     "C2",
     false,
-    500
+    1500
   ],
   "East": [
     true,
     "C3",
     false,
-    500
+    1500
   ],
   "North West": [
-    true,
+    false,
     "C7",
     false,
     500
   ],
   "North East": [
-    true,
+    false,
     "C4",
     false,
     500
   ],
   "South West": [
-    true,
+    false,
     "C7",
     false,
     500
   ],
   "South East": [
-    true,
+    false,
     "C1",
     false,
     500
@@ -55,6 +55,6 @@
     0,
     0.5
   ],
-  "Look Duration": 500,
-  "Demo Mode": true
+  "Look Duration": 1000,
+  "Demo Mode": false
 }

@@ -42,6 +42,7 @@ class LaunchScreen(ctk.CTkFrame):
         self._input_duration = settings['Look Duration'] / 1000
         self._blink_duration = settings['Blink'][4] / 1000
         self._blink_sensitivity = settings['Blink'][5]
+        self._blink_active = settings['Blink'][0]
 
         # dictionary for the outputs being able to be sent out over hardware
         self._outputs = {
@@ -49,10 +50,10 @@ class LaunchScreen(ctk.CTkFrame):
             'South':self._south,
             'West':self._west,
             'East':self._east,
-            'North West':self._north_west,
-            'North East':self._north_east,
-            'South West':self._south_west,
-            'South East':self._south_east,
+            'North West': self._north_west,
+            'North East': self._north_east,
+            'South West': self._south_west,
+            'South East': self._south_east,
             'Blink':self._blink
         }
 
@@ -103,7 +104,9 @@ class LaunchScreen(ctk.CTkFrame):
                 # make prediction
                 prediction = self._model.predict_direction(cropped_image)
                 self._look_duration(prediction)
-                self._blink_detection()
+                
+                if self._blink_active:
+                    self._blink_detection()
             else:
                 # inform the user their eyes aren't being seen
                 self._warning_text.configure(text="Eyes aren't visible!")
@@ -138,18 +141,23 @@ class LaunchScreen(ctk.CTkFrame):
                 
     def _send_multiple_outputs_CAR(self, prediction):
         if prediction != 'Center':
+            print("good")
             if prediction == 'North West':
-                self._outputs['North'].send_output()
-                self._outputs['West'].send_output()
+                print("nw")
+                #self._outputs['North'].send_output()
+                #self._outputs['West'].send_output()
             elif prediction == 'North East':
-                self._outputs['North'].send_output()
-                self._outputs['East'].send_output()
+                print("ne")
+                #self._outputs['North'].send_output()
+                #self._outputs['East'].send_output()
             elif prediction == 'South West':
-                self._outputs['South'].send_output()
-                self._outputs['West'].send_output()
+                print("sw")
+                #self._outputs['South'].send_output()
+                #self._outputs['West'].send_output()
             elif prediction == 'South East':
-                self._outputs['South'].send_output()
-                self._outputs['East'].send_output()
+                print("se")
+                #self._outputs['South'].send_output()
+                #self._outputs['East'].send_output()
             else:
                 self._outputs[prediction].send_output()
 
