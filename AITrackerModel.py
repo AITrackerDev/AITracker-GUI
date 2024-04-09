@@ -14,13 +14,14 @@ class AITrackerModel():
     '''
     Load and make predictions on the AITracker neural network model, as well as process images to fit the network's expectations.
     '''
-    def __init__(self, verbose: int):
+    def __init__(self, verbose: int, dlib_landmarks_path: str):
         '''
         Initialize an AITrackerModel object.
         
         Parameters:
         -----------
             verbose (int): A value 0 or 1. 1 prints predictions to console, 0 doesn't.
+            dlib_landmarks_path (str): A path to the dlib facial landmarks file.
             
         Raises:
         -------
@@ -37,7 +38,7 @@ class AITrackerModel():
             
         # imaging process constants
         self._eyes_detector = dlib.get_frontal_face_detector()
-        self._predictor = dlib.shape_predictor(os.path.join('assets', 'shape_predictor_68_face_landmarks.dat'))
+        self._predictor = dlib.shape_predictor(dlib_landmarks_path)
         self._image_size = (190, 80)
         
         # the points for the EAR calculation

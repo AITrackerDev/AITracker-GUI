@@ -16,9 +16,11 @@ class LaunchScreen(ctk.CTkFrame):
     def __init__(self, root, screen_changer, settings):
         super().__init__(root, width=root.winfo_width(), height=root.winfo_height())
         self._screen_changer = screen_changer
+        
+        landmarks_path = os.path.join("assets", "shape_predictor_68_face_landmarks.dat")
 
         # network and model code
-        self._model = AITrackerModel(0)
+        self._model = AITrackerModel(0, landmarks_path)
 
         # leave the screen when 'b' is pressed
         root.bind('b', lambda event: self.leave_screen(root))
