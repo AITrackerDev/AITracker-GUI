@@ -333,40 +333,89 @@ def convert_rgb_to_grayscale(h5_file_path, output_h5_path):
 # output_h5_path = 'H5Demo/TEMP.h5'
 # convert_rgb_to_grayscale(h5_file_path, output_h5_path)
 
+def combine_all_h5_files(input_directory, output_h5_file):
+    input_h5_files = [os.path.join(input_directory, file_name) for file_name in os.listdir(input_directory) if file_name.endswith('.h5')]
+    combine_h5_files_from_list(input_h5_files, output_h5_file)
+
+def combine_h5_files_from_list(input_h5_files, output_h5_file):
+    combined_images = []
+    combined_labels = []
+
+    # Iterate over each input H5 file
+    for input_h5_file in input_h5_files:
+        # Open the input H5 file in read mode
+        with h5py.File(input_h5_file, 'r') as h5_file:
+            # Read data from the file
+            images = h5_file['images'][:]
+            labels = h5_file['labels'][:]
+
+        # Append data from the current file to the combined datasets
+        combined_images.append(images)
+        combined_labels.append(labels)
+
+    # Concatenate the data from all files
+    combined_images = np.concatenate(combined_images, axis=0)
+    combined_labels = np.concatenate(combined_labels, axis=0)
+
+    # Create a new H5 file for the combined data
+    with h5py.File(output_h5_file, 'w') as output_h5_file:
+        # Create datasets in the new file
+        output_h5_file.create_dataset('images', data=combined_images)
+        output_h5_file.create_dataset('labels', data=combined_labels)
+
+    print(f"Data from '{input_h5_files}' combined and saved to '{output_h5_file}'.")
+
+def print_h5_file_shapes(directory):
+    # Iterate over files in the directory
+    for file_name in os.listdir(directory):
+        file_path = os.path.join(directory, file_name)
+        if os.path.isfile(file_path) and file_name.endswith('.h5'):
+            print(f"File: {file_name}")
+            # Open the H5 file in read mode
+            with h5py.File(file_path, 'r') as h5_file:
+                # Iterate over datasets in the H5 file
+                for dataset_name, dataset in h5_file.items():
+                    print(f"Dataset: {dataset_name}, Shape: {dataset.shape}")
+
 if __name__ == "__main__":
-    # Specify the input directory containing H5 files
-    input_directory = 'H5Demo'
+    print_h5_file_shapes('TEMP')
 
-    # Specify the output file paths for training and testing H5 files
-    output_train_file_path = 'H5Demo/TEMP_output_train.h5'
-    output_test_file_path = 'H5Demo/TEMP_output_test.h5'
-
-    # Process all H5 files in the input directory
-    # process_all_h5_files(input_directory, output_train_file_path, output_test_file_path)
-
-    print("Data split and saved successfully.")
-
-    substring_to_label_mapping = {
-        'northwest': 'North West',
-        'northeast': 'North East',
-        'southwest': 'South West',
-        'southeast': 'South East',
-        'north': 'North',
-        'south': 'South',
-        'west': 'West',
-        'east': 'East',
-        'center': 'Center'
-    }
-
-    combine_h5_files('H5Demo/final_eye_data.h5', 'H5Demo/image_collection2024-03-19_09-54-18.h5', 'H5Demo/TEMP_combined_data.h5')
-    # check_color_format('H5Demo/TEMP_combined_data.h5')
-    update_labels('H5Demo/TEMP_combined_data.h5', 'H5Demo/NEW_final_eye_data.h5', substring_to_label_mapping)
-    # print_labels('H5Demo/final_eye_data.h5')
-
-    # Remove all H5 files except 'final_eye_data.h5'
-    for file_name in os.listdir(input_directory):
-        if file_name.startswith('TEMP'):
-            os.remove(os.path.join(input_directory, file_name))
-            print(f"Removed {file_name}.")
+    # combine_all_h5_files('TEMP', 'compiled_data.h5')
+    # print_labels('H5Demo/numpy_eye_data.h5')
+    # # Specify the input directory containing H5 files
+    # input_directory = 'H5Demo'
+    #
+    # # Specify the output file paths for training and testing H5 files
+    # output_train_file_path = 'H5Demo/TEMP_output_train.h5'
+    # output_test_file_path = 'H5Demo/TEMP_output_test.h5'
+    #
+    # # Process all H5 files in the input directory
+    # # process_all_h5_files(input_directory, output_train_file_path, output_test_file_path)
+    #
+    # print("Data split and saved successfully.")
+    #
+    # substring_to_label_mapping = {
+    #     'northwest': 'North West',
+    #     'northeast': 'North East',
+    #     'southwest': 'South West',
+    #     'southeast': 'South East',
+    #     'north': 'North',
+    #     'south': 'South',
+    #     'west': 'West',
+    #     'east': 'East',
+    #     'center': 'Center'
+    # }
+    #
+    # combine_h5_files('H5Demo/final_eye_data.h5', 'H5Demo/image_collection2024-03-19_09-54-18.h5', 'H5Demo/TEMP_combined_data.h5')
+    # # check_color_format('H5Demo/TEMP_combined_data.h5')
+    # update_labels('H5Demo/TEMP_combined_data.h5', 'H5Demo/NEW_final_eye_data.h5', substring_to_label_mapping)
+    # # print_labels('H5Demo/final_eye_data.h5')
+    # image_to_numpy_arr('H5Demo/NEW_final_eye_data.h5')
+    #
+    # # Remove all H5 files except 'final_eye_data.h5'
+    # for file_name in os.listdir(input_directory):
+    #     if file_name.startswith('TEMP'):
+    #         os.remove(os.path.join(input_directory, file_name))
+    #         print(f"Removed {file_name}.")
 
     # readH5('H5Demo/final_eye_data.h5')
