@@ -19,3 +19,5 @@ CAR_KEYS.py
 *.jpg
 *.hdf5
 env/
+test.py
+wandb/

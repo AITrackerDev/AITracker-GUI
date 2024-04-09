@@ -1,11 +1,21 @@
 import h5py
+import os
 import numpy as np
+# from wandb import magic
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
-from keras import models, layers
+from keras import models, layers, callbacks
+
+EPOCHS = 30
+MODEL_FILE = 'image_classifier5.keras'
+PATIENCE = int(EPOCHS * .2)
 
 # Load data from H5 file
+<<<<<<< HEAD
 with h5py.File('H5Demo/numpy_eye_data.h5', 'r') as h5_file:
+=======
+with h5py.File(os.path.join('H5Demo', 'numpy_eye_data.h5'), 'r') as h5_file:
+>>>>>>> f1e1c8b216e6064fea753c75f93f7e7a73acf7eb
     images = h5_file['images'][:]
     labels_str = h5_file['labels'][:]
 
@@ -43,7 +53,12 @@ model.add(layers.Dense(len(class_names), activation='softmax'))  # Number of cla
 # Define loss function and metric
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
+# call backs to stop training when val_loss is low enough and val_accuracy is high
+es = callbacks.EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=PATIENCE)
+mc = callbacks.ModelCheckpoint(MODEL_FILE, monitor='val_accuracy', mode='max', verbose=1, save_best_only=True)
+
 # Training the model
+<<<<<<< HEAD
 model.fit(training_images, training_labels, epochs=16, validation_data=(testing_images, testing_labels))
 
 # Retrieve final loss and accuracy values for the trained neural network
@@ -119,3 +134,10 @@ model.save('image_classifier5.model')
 # predicted_class = class_names[predicted_class_index]
 #
 # print(f"Prediction: {predicted_class}")
+=======
+model.fit(training_images, training_labels, epochs=EPOCHS, validation_data=(testing_images, testing_labels), callbacks=[es, mc])
+
+# Retrieve final loss and accuracy values for the trained neural network
+loss, accuracy = model.evaluate(testing_images, testing_labels)
+print(f"Loss: {loss}  Accuracy: {accuracy}")
+>>>>>>> f1e1c8b216e6064fea753c75f93f7e7a73acf7eb

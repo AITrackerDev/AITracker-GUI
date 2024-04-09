@@ -9,6 +9,8 @@ import threading
 import multiprocessing
 import time
 
+CAR_DEMO = False
+
 class LaunchScreen(ctk.CTkFrame):
     '''
     The screen that the user interacts with using their eyes.
@@ -17,9 +19,11 @@ class LaunchScreen(ctk.CTkFrame):
     def __init__(self, root, screen_changer, settings):
         super().__init__(root, width=root.winfo_width(), height=root.winfo_height())
         self._screen_changer = screen_changer
+        
+        landmarks_path = os.path.join("assets", "shape_predictor_68_face_landmarks.dat")
 
         # network and model code
-        self._model = AITrackerModel(0)
+        self._model = AITrackerModel(0, landmarks_path)
 
         # leave the screen when 'b' is pressed
         root.bind('b', lambda event: self.leave_screen(root))
@@ -29,44 +33,45 @@ class LaunchScreen(ctk.CTkFrame):
         demo = settings['Demo Mode']
 
         # indicator squares
-        self._up = IndicatorSquare(self, settings['Up'], demo)
-        self._down = IndicatorSquare(self, settings['Down'], demo)
-        self._left = IndicatorSquare(self, settings['Left'], demo)
-        self._right = IndicatorSquare(self, settings['Right'], demo)
-        self._up_left = IndicatorSquare(self, settings['Up Left'], demo)
-        self._up_right = IndicatorSquare(self, settings['Up Right'], demo)
-        self._down_left = IndicatorSquare(self, settings['Down Left'], demo)
-        self._down_right = IndicatorSquare(self, settings['Down Right'], demo)
+        self._north = IndicatorSquare(self, settings['North'], demo)
+        self._south = IndicatorSquare(self, settings['South'], demo)
+        self._west = IndicatorSquare(self, settings['West'], demo)
+        self._east = IndicatorSquare(self, settings['East'], demo)
+        self._north_west = IndicatorSquare(self, settings['North West'], demo)
+        self._north_east = IndicatorSquare(self, settings['North East'], demo)
+        self._south_west = IndicatorSquare(self, settings['South West'], demo)
+        self._south_east = IndicatorSquare(self, settings['South East'], demo)
         self._blink = IndicatorSquare(self, settings['Blink'], demo)
         
         # settings variables
         self._input_duration = settings['Look Duration'] / 1000
         self._blink_duration = settings['Blink'][4] / 1000
         self._blink_sensitivity = settings['Blink'][5]
+        self._blink_active = settings['Blink'][0]
 
         # dictionary for the outputs being able to be sent out over hardware
         self._outputs = {
-            'North':self._up,
-            'South':self._down,
-            'West':self._left,
-            'East':self._right,
-            'North West':self._up_left,
-            'North East':self._up_right,
-            'South West':self._down_left,
-            'South East':self._down_right,
+            'North':self._north,
+            'South':self._south,
+            'West':self._west,
+            'East':self._east,
+            'North West': self._north_west,
+            'North East': self._north_east,
+            'South West': self._south_west,
+            'South East': self._south_east,
             'Blink':self._blink
         }
 
         #placing squares
-        self._up_left.place(relx=0, rely=0, anchor=ctk.NW)
-        self._up.place(relx=0.5, rely=0, anchor=ctk.N)
-        self._up_right.place(relx=1, rely=0, anchor=ctk.NE)
-        self._left.place(relx=0, rely=0.5, anchor=ctk.W)
+        self._north_west.place(relx=0, rely=0, anchor=ctk.NW)
+        self._north.place(relx=0.5, rely=0, anchor=ctk.N)
+        self._north_east.place(relx=1, rely=0, anchor=ctk.NE)
+        self._west.place(relx=0, rely=0.5, anchor=ctk.W)
         self._blink.place(relx=0.5, rely=0.5, anchor=ctk.CENTER)
-        self._right.place(relx=1, rely=0.5, anchor=ctk.E)
-        self._down_left.place(relx=0, rely=1, anchor=ctk.SW)
-        self._down.place(relx=0.5, rely=1, anchor=ctk.S)
-        self._down_right.place(relx=1, rely=1, anchor=ctk.SE)
+        self._east.place(relx=1, rely=0.5, anchor=ctk.E)
+        self._south_west.place(relx=0, rely=1, anchor=ctk.SW)
+        self._south.place(relx=0.5, rely=1, anchor=ctk.S)
+        self._south_east.place(relx=1, rely=1, anchor=ctk.SE)
 
         # look duration variables
         self._current_direction = 'Center'
@@ -103,13 +108,16 @@ class LaunchScreen(ctk.CTkFrame):
                     self._canvas.create_image(0, 0, image=self._photo, anchor=ctk.NW)
                     self._warning_text.configure(text="")
 
-                    # make prediction
-                    prediction = self._model.predict_direction(cropped_image)
-                    self._look_duration(prediction)
+                # make prediction
+                prediction = self._model.predict_direction(cropped_image)
+                self._look_duration(prediction)
+                
+                if self._blink_active:
                     self._blink_detection()
-                else:
-                    # inform the user their eyes aren't being seen
-                    self._warning_text.configure(text="Eyes aren't visible!")
+            else:
+                # inform the user their eyes aren't being seen
+                self._warning_text.configure(text="Eyes aren't visible!")
+            self.after(5, self._update_camera)
 
     def _look_duration(self, prediction: str):
         '''
@@ -130,18 +138,45 @@ class LaunchScreen(ctk.CTkFrame):
             # check if the start time + input duration is bigger then current time
             if self._look_time + self._input_duration <= time.time():
                 # send the output since it passed both blocks
-                if prediction != 'Center':
-                    self._outputs[prediction].send_output()
+                if CAR_DEMO:
+                    self._send_multiple_outputs_CAR(prediction)
+                else:
+                    if prediction != 'Center':
+                        self._outputs[prediction].send_output()
                 self._current_direction = 'Center'
                 self._blink_time = time.time()
+                
+    def _send_multiple_outputs_CAR(self, prediction):
+        if prediction != 'Center':
+            print("good")
+            if prediction == 'North West':
+                print("nw")
+                #self._outputs['North'].send_output()
+                #self._outputs['West'].send_output()
+            elif prediction == 'North East':
+                print("ne")
+                #self._outputs['North'].send_output()
+                #self._outputs['East'].send_output()
+            elif prediction == 'South West':
+                print("sw")
+                #self._outputs['South'].send_output()
+                #self._outputs['West'].send_output()
+            elif prediction == 'South East':
+                print("se")
+                #self._outputs['South'].send_output()
+                #self._outputs['East'].send_output()
+            else:
+                self._outputs[prediction].send_output()
+
+    def _send_blink_CAR(self):
+        self._outputs['North'].send_output()
+        self._outputs['East'].send_output()
+        self._outputs['South'].send_output()
+        self._outputs['West'].send_output()
 
     def _blink_detection(self):
         '''
         Check if the user has blinked for a certain amount of time.
-        
-        Parameters:
-        -----------
-            frame: The current frame to check the distances of the top and bottom of each eye.
         '''
         
         # calculate distance between the top and bottom of each eye
@@ -158,12 +193,15 @@ class LaunchScreen(ctk.CTkFrame):
                 # check if the start time + input duration is bigger then current time
                 if self._blink_time + self._blink_duration <= time.time():
                     # send the output since it passed both blocks
-                    self._outputs['Blink'].send_output()
+                    if CAR_DEMO:
+                        self._send_blink_CAR()
+                    else:
+                        self._outputs['Blink'].send_output()
                     self._blink_time = time.time()
 
     def leave_screen(self, root):
         '''
-        Performs certain actions to 'clean up' the screen and leave without issues.
+        Cleans up the screen and leaves.
         '''
         self._cam.release()
         root.unbind('b')

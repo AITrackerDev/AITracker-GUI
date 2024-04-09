@@ -8,7 +8,7 @@ class IndicatorSquare(ctk.CTkFrame):
     '''
     
     def __init__(self, root, settings, demo):
-        super().__init__(root, width=150, height=150)
+        super().__init__(root, width=100, height=100)
         
         self._demo = demo
         

@@ -1,0 +1,8 @@
+This is where the application can be configured to the needs of your use case.
+Each setting block refers to one specific output of the program (eg. "Up" refers to what happens when you look up).
+The switch indicates if the application will track that input, the entry box refers to which pin should be turned on on the FT23H board, and the check box refers to if the input will be an on/off switch (eg. looking in that direction will turn the pin on, and stay on until you look in that direction again).
+For the pin setting, the format must be C and a number 1-9, or D and a number 1-7.
+The "Look Duration" setting will refer to how long the user will have to look in any direction for that input to be recognized.
+The blink settings are a little more involved but follow the same principles.
+The blink sensitivity refers to how sensitive the application is when tracking blinks.
+The "Blink Duration" setting refers to how long the eyes have to be closed before a blink is tracked.

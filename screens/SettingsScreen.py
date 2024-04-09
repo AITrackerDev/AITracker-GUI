@@ -25,31 +25,31 @@ class SettingsScreen(ctk.CTkFrame):
         _settings_frame.place(relx=.5, rely=.5, anchor=ctk.CENTER)
 
         # setting options widgets
-        self._up = DirectionSetting(_settings_frame, name='Up')
-        self._down = DirectionSetting(_settings_frame, name='Down')
-        self._left = DirectionSetting(_settings_frame, name='Left')
-        self._right = DirectionSetting(_settings_frame, name='Right')
-        self._up_left = DirectionSetting(_settings_frame, name='Up Left')
-        self._up_right = DirectionSetting(_settings_frame, name='Up Right')
-        self._down_left = DirectionSetting(_settings_frame, name='Down Left')
-        self._down_right = DirectionSetting(_settings_frame, name='Down Right')
+        self._north = DirectionSetting(_settings_frame, name='North')
+        self._south = DirectionSetting(_settings_frame, name='South')
+        self._west = DirectionSetting(_settings_frame, name='West')
+        self._east = DirectionSetting(_settings_frame, name='East')
+        self._north_west = DirectionSetting(_settings_frame, name='North West')
+        self._north_east = DirectionSetting(_settings_frame, name='North East')
+        self._south_west = DirectionSetting(_settings_frame, name='South West')
+        self._south_east = DirectionSetting(_settings_frame, name='South East')
         self._blink = BlinkSetting(_settings_frame, name='Blink')
         self._misc_settings = MiscSettings(_settings_frame, name='Look Duration')
 
         self._settings = [
-            self._up, self._down, self._left, self._right, self._up_left,
-            self._up_right, self._down_left, self._down_right, self._blink
+            self._north, self._south, self._west, self._east, self._north_west,
+            self._north_east, self._south_west, self._south_east, self._blink
         ]
 
         # setting placements
-        self._up.grid(row=0, column=0, padx=5, pady=5, sticky=ctk.NSEW)
-        self._down.grid(row=0, column=1, padx=5, pady=5, sticky=ctk.NSEW)
-        self._left.grid(row=1, column=0, padx=5, pady=5, sticky=ctk.NSEW)
-        self._right.grid(row=1, column=1, padx=5, pady=5, sticky=ctk.NSEW)
-        self._up_left.grid(row=2, column=0, padx=5, pady=5, sticky=ctk.NSEW)
-        self._up_right.grid(row=2, column=1, padx=5, pady=5, sticky=ctk.NSEW)
-        self._down_left.grid(row=3, column=0, padx=5, pady=5, sticky=ctk.NSEW)
-        self._down_right.grid(row=3, column=1, padx=5, pady=5, sticky=ctk.NSEW)
+        self._north.grid(row=0, column=0, padx=5, pady=5, sticky=ctk.NSEW)
+        self._south.grid(row=0, column=1, padx=5, pady=5, sticky=ctk.NSEW)
+        self._west.grid(row=1, column=0, padx=5, pady=5, sticky=ctk.NSEW)
+        self._east.grid(row=1, column=1, padx=5, pady=5, sticky=ctk.NSEW)
+        self._north_west.grid(row=2, column=0, padx=5, pady=5, sticky=ctk.NSEW)
+        self._north_east.grid(row=2, column=1, padx=5, pady=5, sticky=ctk.NSEW)
+        self._south_west.grid(row=3, column=0, padx=5, pady=5, sticky=ctk.NSEW)
+        self._south_east.grid(row=3, column=1, padx=5, pady=5, sticky=ctk.NSEW)
         self._blink.grid(row=4, column=0, padx=5, pady=5, sticky=ctk.NSEW)
         self._misc_settings.grid(row=4, column=1, padx=5, pady=5, sticky=ctk.NSEW)
 

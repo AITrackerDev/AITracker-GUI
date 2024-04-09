@@ -1,48 +1,48 @@
 {
-  "Up": [
+  "North": [
     true,
     "C0",
     false,
+    4000
+  ],
+  "South": [
+    false,
+    "C1",
+    false,
     500
   ],
-  "Down": [
+  "West": [
     true,
     "C2",
     false,
-    500
+    1500
   ],
-  "Left": [
-    true,
-    "C5",
-    false,
-    500
-  ],
-  "Right": [
+  "East": [
     true,
     "C3",
     false,
-    500
+    1500
   ],
-  "Up Left": [
-    true,
+  "North West": [
+    false,
     "C7",
     false,
     500
   ],
-  "Up Right": [
-    true,
+  "North East": [
+    false,
     "C4",
     false,
     500
   ],
-  "Down Left": [
-    true,
+  "South West": [
+    false,
     "C7",
     false,
     500
   ],
-  "Down Right": [
-    true,
+  "South East": [
+    false,
     "C1",
     false,
     500
@@ -53,8 +53,8 @@
     false,
     500,
     0,
-    0.45
+    0.5
   ],
-  "Look Duration": 0,
-  "Demo Mode": true
+  "Look Duration": 1000,
+  "Demo Mode": false
 }
