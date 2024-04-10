@@ -33,20 +33,20 @@ class AITrackerModel():
         self._verbose = verbose
         
         # load labels for proper predictions
-        with h5py.File(os.path.join('H5Demo', 'final_eye_data.h5'), 'r') as h5_file:
+        with h5py.File(os.path.join('H5Demo', 'final_numpy_data.h5'), 'r') as h5_file:
             labels_str = h5_file['labels'][:]
-            
+
         # imaging process constants
         self._eyes_detector = dlib.get_frontal_face_detector()
         self._predictor = dlib.shape_predictor(dlib_landmarks_path)
         self._image_size = (190, 80)
-        
+
         # the points for the EAR calculation
         self._eye_points = None
         self._EAR = None
-            
+
         # load the model into the program
-        self._model = tf.keras.models.load_model(os.path.join('image_classifier5.model'))
+        self._model = tf.keras.models.load_model(os.path.join('image_classifier6.model'))
         
         # load necessary labels into program
         _label_encoder = LabelEncoder()
