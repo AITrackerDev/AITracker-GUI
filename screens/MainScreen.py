@@ -15,7 +15,7 @@ class MainScreen(ctk.CTkFrame):
         
         #widget creation
         _title_label = ctk.CTkLabel(self, text='Welcome to the AITracker GUI!', font=ctk.CTkFont(size=40))
-        _subtitle_label = ctk.CTkLabel(self, text='Click launch to get started, settings for modification, and help for help', font=ctk.CTkFont(size=25))
+        _subtitle_label = ctk.CTkLabel(self, text='Click launch to get started, settings for modification, and help for information', font=ctk.CTkFont(size=25))
         _launch_button = ctk.CTkButton(self, text='Launch', corner_radius=10, command=lambda: self._load_launch_screen())
         _settings_button = ctk.CTkButton(self, text='Settings', corner_radius=10, command=lambda: self._screen_changer('SettingsScreen'))
         _help_button = ctk.CTkButton(self, text='Help', corner_radius=10, command=lambda: self._screen_changer('HelpScreen'))

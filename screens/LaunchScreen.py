@@ -72,6 +72,10 @@ class LaunchScreen(ctk.CTkFrame):
         self._south_west.place(relx=0, rely=1, anchor=ctk.SW)
         self._south.place(relx=0.5, rely=1, anchor=ctk.S)
         self._south_east.place(relx=1, rely=1, anchor=ctk.SE)
+        
+        # leave screen label
+        self._leave_screen_label = ctk.CTkLabel(self, text="Press 'b' to go back to the main menu.", font=ctk.CTkFont(size=20))
+        self._leave_screen_label.place(relx=0.5, rely=0.6, anchor=ctk.CENTER)
 
         # look duration variables
         self._current_direction = 'Center'
@@ -85,7 +89,7 @@ class LaunchScreen(ctk.CTkFrame):
         self._canvas = ctk.CTkCanvas(self, width=self._model.image_size[0], height=self._model.image_size[1])
         self._canvas.place(relx=0.5, rely=0.3, anchor=ctk.CENTER)
         self._warning_text = ctk.CTkLabel(self, text="", font=ctk.CTkFont(size=40))
-        self._warning_text.place(relx=0.5, rely=0.65, anchor=ctk.CENTER)
+        self._warning_text.place(relx=0.5, rely=0.7, anchor=ctk.CENTER)
         self._update_camera()
     
     def _update_camera(self):
@@ -145,31 +149,16 @@ class LaunchScreen(ctk.CTkFrame):
                 
     def _send_multiple_outputs_CAR(self, prediction):
         if prediction != 'Center':
-            print("good")
             if prediction == 'North West':
-                print("nw")
-                #self._outputs['North'].send_output()
-                #self._outputs['West'].send_output()
+                self._outputs['West'].send_output()
             elif prediction == 'North East':
-                print("ne")
-                #self._outputs['North'].send_output()
-                #self._outputs['East'].send_output()
+                self._outputs['East'].send_output()
             elif prediction == 'South West':
-                print("sw")
-                #self._outputs['South'].send_output()
-                #self._outputs['West'].send_output()
+                self._outputs['West'].send_output()
             elif prediction == 'South East':
-                print("se")
-                #self._outputs['South'].send_output()
-                #self._outputs['East'].send_output()
+                self._outputs['East'].send_output()
             else:
                 self._outputs[prediction].send_output()
-
-    def _send_blink_CAR(self):
-        self._outputs['North'].send_output()
-        self._outputs['East'].send_output()
-        self._outputs['South'].send_output()
-        self._outputs['West'].send_output()
 
     def _blink_detection(self):
         '''
@@ -190,10 +179,7 @@ class LaunchScreen(ctk.CTkFrame):
                 # check if the start time + input duration is bigger then current time
                 if self._blink_time + self._blink_duration <= time.time():
                     # send the output since it passed both blocks
-                    if CAR_DEMO:
-                        self._send_blink_CAR()
-                    else:
-                        self._outputs['Blink'].send_output()
+                    self._outputs['Blink'].send_output()
                     self._blink_time = time.time()
 
     def leave_screen(self, root):
