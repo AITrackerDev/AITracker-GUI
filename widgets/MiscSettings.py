@@ -20,7 +20,7 @@ class MiscSettings(ctk.CTkFrame):
         description = ctk.CTkLabel(self, text='Runs application without sending USB outputs', font=ctk.CTkFont(size=10))
         
         self._check_var = ctk.BooleanVar(value=False)
-        self._check = ctk.CTkCheckBox(self, variable=self._check_var, onvalue=True, offvalue=False, text='Requires Restart')
+        self._check = ctk.CTkCheckBox(self, variable=self._check_var, onvalue=True, offvalue=False, text='')
         
         # placements
         x_pad,y_pad = 2,2
