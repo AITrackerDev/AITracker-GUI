@@ -64,7 +64,6 @@ class AITrackerModel():
     
     # make a prediction on a direction through the network
     def predict_direction(self, image):
-        #image = np.reshape(image, (1, 80, 190))
         prediction = self._model.predict(np.array([image]), verbose=self._verbose)
         predicted_class = self._class_names[np.argmax(prediction)]
         
