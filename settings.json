@@ -6,7 +6,7 @@
     4000
   ],
   "South": [
-    false,
+    true,
     "C1",
     false,
     500
@@ -24,37 +24,37 @@
     1500
   ],
   "North West": [
-    false,
+    true,
     "C7",
     false,
     500
   ],
   "North East": [
-    false,
+    true,
     "C4",
     false,
     500
   ],
   "South West": [
-    false,
+    true,
     "C7",
     false,
     500
   ],
   "South East": [
-    false,
+    true,
     "C1",
     false,
     500
   ],
   "Blink": [
-    true,
+    false,
     "D4",
     false,
     500,
-    0,
+    100,
     0.5
   ],
-  "Look Duration": 1000,
-  "Demo Mode": false
+  "Look Duration": 100,
+  "Demo Mode": true
 }
