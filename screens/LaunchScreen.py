@@ -86,27 +86,24 @@ class LaunchScreen(ctk.CTkFrame):
         self._canvas.place(relx=0.5, rely=0.3, anchor=ctk.CENTER)
         self._warning_text = ctk.CTkLabel(self, text="", font=ctk.CTkFont(size=40))
         self._warning_text.place(relx=0.5, rely=0.65, anchor=ctk.CENTER)
-
-        process = multiprocessing.Process(target=self._update_camera(), name="camera")
-        process.start()
+        self._update_camera()
     
     def _update_camera(self):
         '''
         Updates the camera feed and performs the necessary prediction/blink detection. Also displays the cropped
         eye image the neural network sees.
         '''
-        while(True):
-            ret, frame = self._cam.read()
-            if ret:
-                # crop the image to our network's expectation
-                cropped_image, correct = self._model.process_image(cv2.flip(frame, 1))
+        ret, frame = self._cam.read()
+        if ret:
+            # crop the image to our network's expectation
+            cropped_image, correct = self._model.process_image(cv2.flip(frame, 1))
 
-                # if the image is valid
-                if correct:
-                    # put image on screen if it's properly resized
-                    self._photo = ImageTk.PhotoImage(image=Image.fromarray(cv2.cvtColor(cropped_image, cv2.COLOR_BGR2RGB)))
-                    self._canvas.create_image(0, 0, image=self._photo, anchor=ctk.NW)
-                    self._warning_text.configure(text="")
+            # if the image is valid
+            if correct:
+                # put image on screen if it's properly resized
+                self._photo = ImageTk.PhotoImage(image=Image.fromarray(cv2.cvtColor(cropped_image, cv2.COLOR_BGR2RGB)))
+                self._canvas.create_image(0, 0, image=self._photo, anchor=ctk.NW)
+                self._warning_text.configure(text="")
 
                 # make prediction
                 prediction = self._model.predict_direction(cropped_image)
@@ -117,7 +114,7 @@ class LaunchScreen(ctk.CTkFrame):
             else:
                 # inform the user their eyes aren't being seen
                 self._warning_text.configure(text="Eyes aren't visible!")
-            self.after(5, self._update_camera)
+        self.after(5, self._update_camera)
 
     def _look_duration(self, prediction: str):
         '''
@@ -144,7 +141,7 @@ class LaunchScreen(ctk.CTkFrame):
                     if prediction != 'Center':
                         self._outputs[prediction].send_output()
                 self._current_direction = 'Center'
-                self._blink_time = time.time()
+                self._look_time = time.time()
                 
     def _send_multiple_outputs_CAR(self, prediction):
         if prediction != 'Center':
