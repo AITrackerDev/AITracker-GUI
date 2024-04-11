@@ -31,10 +31,6 @@ class AITrackerModel():
         if verbose > 1 or verbose < 0:
             raise ValueError("Error: Verbose parameter isn't 0 or 1!")
         self._verbose = verbose
-        
-        # load labels for proper predictions
-        with h5py.File(os.path.join('H5Demo', 'final_numpy_data.h5'), 'r') as h5_file:
-            labels_str = h5_file['labels'][:]
 
         # imaging process constants
         self._eyes_detector = dlib.get_frontal_face_detector()
@@ -50,8 +46,7 @@ class AITrackerModel():
         
         # load necessary labels into program
         _label_encoder = LabelEncoder()
-        labels_encoded = _label_encoder.fit_transform(labels_str)
-        labels_one_hot = np.eye(len(np.unique(labels_encoded)))[labels_encoded]
+        _label_encoder.fit_transform(['North', 'West', 'East', 'South', 'Center', 'North West', 'North East', 'South West', 'South East'])
         self._class_names = _label_encoder.classes_
     
     @property
@@ -68,7 +63,7 @@ class AITrackerModel():
         predicted_class = self._class_names[np.argmax(prediction)]
         
         # return string representation of prediction
-        return predicted_class.decode('utf-8').strip()
+        return predicted_class
 
     # takes the image, crops the eyes, puts it into the template, resizes to our network's image input size      
     def process_image(self, image):
