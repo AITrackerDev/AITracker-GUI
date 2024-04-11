@@ -1,6 +1,7 @@
 import customtkinter as ctk
 import re
 import json
+import os
 from widgets.DirectionSetting import DirectionSetting
 from widgets.MiscSettings import MiscSettings
 from widgets.IndicatorSquare import PIN_REGEX
@@ -79,12 +80,12 @@ class SettingsScreen(ctk.CTkFrame):
         
         # save settings
         if not invalid_pin:
-            self._screen_changer('MainScreen')
             try:
-                with open('settings.json', 'w') as json_file:
+                with open(os.path.join('settings.json'), 'w') as json_file:
                     json.dump(new_settings, json_file, indent=2)
             except Exception as e:
                 print(f"Error saving data to 'settings.json': {e}")
+            self._screen_changer('MainScreen')
         # display warning message
         else:
             warning = ctk.CTkLabel(self, text='One or more pin values are invalid', font=ctk.CTkFont(size=30))
