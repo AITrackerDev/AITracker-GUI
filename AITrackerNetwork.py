@@ -6,8 +6,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from keras import models, layers, callbacks
 
-EPOCHS = 8
-MODEL_FILE = 'image_classifier6.model'
+EPOCHS = 80
+MODEL_FILE = 'AITNetwork.keras'
 PATIENCE = int(EPOCHS * .2)
 
 # Load data from H5 file
