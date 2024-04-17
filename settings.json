@@ -25,25 +25,25 @@
   ],
   "North West": [
     false,
-    "C7",
+    "C4",
     false,
     500
   ],
   "North East": [
     false,
-    "C4",
+    "C5",
     false,
     500
   ],
   "South West": [
     false,
-    "C7",
+    "C6",
     false,
     500
   ],
   "South East": [
     false,
-    "C1",
+    "C7",
     false,
     500
   ],

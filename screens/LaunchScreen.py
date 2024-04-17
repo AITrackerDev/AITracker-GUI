@@ -5,8 +5,6 @@ import time
 from PIL import Image, ImageTk
 from widgets import IndicatorSquare
 from AITrackerModel import AITrackerModel
-import threading
-import multiprocessing
 import time
 
 CAR_DEMO = False
