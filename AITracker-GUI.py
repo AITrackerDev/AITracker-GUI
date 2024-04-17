@@ -3,10 +3,10 @@ import subprocess as sp
 import platform
 import ctypes
 import customtkinter as ctk
-from screens.MainScreen import MainScreen
-from screens.LaunchScreen import LaunchScreen
-from screens.HelpScreen import HelpScreen
-from screens.SettingsScreen import SettingsScreen, load_settings_from_json
+from screens import MainScreen
+from screens import LaunchScreen
+from screens import HelpScreen
+from screens import SettingsScreen, load_settings_from_json
 
 class AITrackerGUI(ctk.CTk):
     '''

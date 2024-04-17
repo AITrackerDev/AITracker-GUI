@@ -3,7 +3,7 @@ import customtkinter as ctk
 import cv2
 import time
 from PIL import Image, ImageTk
-from widgets.IndicatorSquare import IndicatorSquare
+from widgets import IndicatorSquare
 from AITrackerModel import AITrackerModel
 import threading
 import multiprocessing

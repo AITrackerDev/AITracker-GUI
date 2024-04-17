@@ -2,10 +2,10 @@ import customtkinter as ctk
 import re
 import json
 import os
-from widgets.DirectionSetting import DirectionSetting
-from widgets.MiscSettings import MiscSettings
+from widgets import DirectionSetting
+from widgets import MiscSettings
 from widgets.IndicatorSquare import PIN_REGEX
-from widgets.BlinkSetting import BlinkSetting
+from widgets import BlinkSetting
 
 class SettingsScreen(ctk.CTkFrame):
     '''
