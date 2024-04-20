@@ -70,8 +70,8 @@ class SettingsScreen(ctk.CTkFrame):
         for setting in self._settings:
             current_settings = setting.get_settings()
 
-            # if the setting is active, check if the pin doesn't match
-            if current_settings[0] and not re.match(PIN_REGEX, current_settings[1]):
+            # check if the pin doesn't match
+            if not re.match(PIN_REGEX, current_settings[1]):
                 invalid_pin = True
                 break
             new_settings.update({setting.name:current_settings})

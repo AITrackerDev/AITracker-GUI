@@ -4,7 +4,7 @@ import cv2
 import time
 from PIL import Image, ImageTk
 from widgets import IndicatorSquare
-from AITrackerModel import AITrackerModel
+from AITracker import AITrackerModel
 import time
 
 CAR_DEMO = False
@@ -28,18 +28,18 @@ class LaunchScreen(ctk.CTkFrame):
         self.focus_set()
         
         # demo mode setting
-        demo = settings['Demo Mode']
+        self._demo = settings['Demo Mode']
 
         # indicator squares
-        self._north = IndicatorSquare(self, settings['North'], demo)
-        self._south = IndicatorSquare(self, settings['South'], demo)
-        self._west = IndicatorSquare(self, settings['West'], demo)
-        self._east = IndicatorSquare(self, settings['East'], demo)
-        self._north_west = IndicatorSquare(self, settings['North West'], demo)
-        self._north_east = IndicatorSquare(self, settings['North East'], demo)
-        self._south_west = IndicatorSquare(self, settings['South West'], demo)
-        self._south_east = IndicatorSquare(self, settings['South East'], demo)
-        self._blink = IndicatorSquare(self, settings['Blink'], demo)
+        self._north = IndicatorSquare(self, settings['North'], self._demo)
+        self._south = IndicatorSquare(self, settings['South'], self._demo)
+        self._west = IndicatorSquare(self, settings['West'], self._demo)
+        self._east = IndicatorSquare(self, settings['East'], self._demo)
+        self._north_west = IndicatorSquare(self, settings['North West'], self._demo)
+        self._north_east = IndicatorSquare(self, settings['North East'], self._demo)
+        self._south_west = IndicatorSquare(self, settings['South West'], self._demo)
+        self._south_east = IndicatorSquare(self, settings['South East'], self._demo)
+        self._blink = IndicatorSquare(self, settings['Blink'], self._demo)
         
         # settings variables
         self._input_duration = settings['Look Duration'] / 1000
@@ -184,6 +184,11 @@ class LaunchScreen(ctk.CTkFrame):
         '''
         Cleans up the screen and leaves.
         '''
+        
+        if not self._demo:
+            for output in self._outputs.values():
+                output.pin = False
+        
         self._cam.release()
         root.unbind('b')
         self._screen_changer('MainScreen')

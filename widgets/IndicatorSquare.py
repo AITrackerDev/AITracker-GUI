@@ -18,10 +18,11 @@ class IndicatorSquare(ctk.CTkFrame):
         
         # set the properties of the frame
         self._active = settings[0]
-        if self._active and not self._demo:
+        if not self._demo:
             try:
                 self._pin = digitalio.DigitalInOut(getattr(board, settings[1]))
                 self._pin.direction = digitalio.Direction.OUTPUT
+                self._pin.value = False
             except Exception as e:
                 error = ctk.CTkLabel(self, text=f"Error: {e}. Please restart application", font=ctk.CTkFont(size=15), wraplength=200, text_color='black')
                 error.place(relx=.5, rely=.5, anchor=ctk.CENTER)
@@ -30,6 +31,14 @@ class IndicatorSquare(ctk.CTkFrame):
         
         # don't show the frame if the setting isn't active
         self.configure(fg_color="white" if self._active else "transparent")
+    
+    @property
+    def pin(self):
+        return self._pin
+    
+    @pin.setter
+    def pin(self, value: bool):
+        self._pin = value
     
     def send_output(self):
         '''
